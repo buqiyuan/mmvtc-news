@@ -1,11 +1,9 @@
 package com.tab.viewpager.activity;
 
 import android.content.Context;
-import android.net.Uri;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.youth.banner.loader.ImageLoader;
 
 /**

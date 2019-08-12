@@ -1,0 +1,114 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tab.viewpager.jwc.CustomVideoView
+        android:id="@+id/videoview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context=".LoginActivity">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/et_name"
+            android:src="@drawable/app_logo" />
+
+        <EditText
+            android:id="@+id/et_name"
+            style="@style/EditTextDrawableLeft"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/et_password"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/et_default_background"
+            android:drawableLeft="@drawable/dynamic_account"
+            android:hint="@string/et_username_hint"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:maxLines="1"
+            android:textColorHint="@color/defaultEditTextHintColor" />
+
+        <EditText
+            android:id="@+id/et_password"
+            style="@style/EditTextDrawableLeft"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/et_default_background"
+            android:drawableLeft="@drawable/dynamic_password"
+            android:hint="@string/et_password_hint"
+            android:imeOptions="actionNext"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:textColorHint="@color/defaultEditTextHintColor" />
+
+
+        <LinearLayout
+            android:id="@+id/ll_vertify"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/et_password"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_vertify"
+                style="@style/EditTextDrawableLeft"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/iv_verificationCode"
+                android:layout_weight="1"
+                android:background="@drawable/et_default_background"
+                android:drawableLeft="@drawable/dynamic_code"
+                android:hint="@string/et_verificationCode_hint"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColorHint="@color/defaultEditTextHintColor" />
+
+            <ImageView
+                android:id="@+id/iv_vertify"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/cb_isSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_vertify"
+            android:layout_marginTop="10dp"
+            android:checked="true"
+            android:text="@string/isSave"
+            android:textColor="#fff" />
+
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cb_isSave"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/login"
+            android:paddingBottom="14dp"
+            android:paddingTop="14dp"
+            android:text="@string/btn_login"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+    </RelativeLayout>
+</RelativeLayout>

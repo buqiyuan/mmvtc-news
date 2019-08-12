@@ -13,6 +13,7 @@
         app:titleTextColor="@color/white"
         android:background="@color/colorPrimary"
         app:popupTheme="@style/toolbarMenuStyle"
+        android:title="@string/title_activity_main"
         app:theme="@style/toolbarTheme"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_course_header"
+    android:layout_width="match_parent"
+    android:layout_height="141.5dp"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/tv_monday"
+        android:layout_width="0dp"
+        android:layout_height="141.5dp"
+        android:layout_weight="1"
+        android:layout_gravity="start"
+        android:gravity="center"
+        android:text="@string/monday"
+        android:background="@drawable/textview_border"
+        android:textColor="@color/courseTextColor"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_tuesday"
+        android:layout_width="0dp"
+        android:layout_height="141.5dp"
+        android:layout_weight="1"
+        android:layout_gravity="start"
+        android:gravity="center"
+        android:background="@drawable/textview_border"
+        android:text="@string/tuesday"
+        android:textColor="@color/courseTextColor"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_wednesday"
+        android:layout_width="0dp"
+        android:layout_height="141.5dp"
+        android:layout_weight="1"
+        android:layout_gravity="start"
+        android:gravity="center"
+        android:text="@string/wednesday"
+        android:background="@drawable/textview_border"
+        android:textColor="@color/courseTextColor"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_thursday"
+        android:layout_width="0dp"
+        android:layout_height="141.5dp"
+        android:layout_weight="1"
+        android:layout_gravity="start"
+        android:gravity="center"
+        android:text="@string/thursday"
+        android:background="@drawable/textview_border"
+        android:textColor="@color/courseTextColor"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_friday"
+        android:layout_width="0dp"
+        android:layout_height="141.5dp"
+        android:layout_weight="1"
+        android:layout_gravity="start"
+        android:gravity="center"
+        android:text="@string/friday"
+        android:background="@drawable/textview_border"
+        android:textColor="@color/courseTextColor"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_saturday"
+        android:layout_width="0dp"
+        android:layout_height="141.5dp"
+        android:layout_weight="1"
+        android:layout_gravity="start"
+        android:gravity="center"
+        android:text="@string/saturday"
+        android:background="@drawable/textview_border"
+        android:textColor="@color/courseTextColor"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/tv_sunday"
+        android:layout_width="0dp"
+        android:layout_height="141.5dp"
+        android:layout_weight="1"
+        android:layout_gravity="start"
+        android:gravity="center"
+        android:text="@string/sunday"
+        android:textColor="@color/courseTextColor"
+        android:textSize="12sp" />
+
+</LinearLayout>

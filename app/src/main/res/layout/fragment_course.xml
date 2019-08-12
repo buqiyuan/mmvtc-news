@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:navigationIcon="@drawable/back"
+        app:popupTheme="@style/toolbarMenuStyle"
+        app:theme="@style/toolbarTheme"
+        app:titleTextColor="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="课程表"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <!--<Spinner-->
+            <!--android:id="@+id/spinner_kb"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="right"-->
+            <!--android:dropDownSelector="@color/skyblue"-->
+            <!--android:dropDownWidth="match_parent"-->
+            <!--android:overlapAnchor="false"-->
+            <!--android:spinnerMode="dropdown">-->
+            <!--</Spinner>-->
+    </android.support.v7.widget.Toolbar>
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="@color/courseHeaderBackground">-->
+
+        <!--<Spinner-->
+            <!--android:id="@+id/spinner_xn"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_toLeftOf="@+id/spinner_xq"-->
+            <!--android:dropDownSelector="@color/skyblue"-->
+            <!--android:dropDownWidth="match_parent"-->
+            <!--android:overlapAnchor="false"-->
+            <!--android:spinnerMode="dropdown">-->
+
+        <!--</Spinner>-->
+
+        <!--<Spinner-->
+            <!--android:id="@+id/spinner_xq"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:dropDownSelector="@color/skyblue"-->
+            <!--android:dropDownWidth="match_parent"-->
+            <!--android:overlapAnchor="false"-->
+            <!--android:spinnerMode="dropdown">-->
+
+        <!--</Spinner>-->
+    <!--</RelativeLayout>-->
+
+    <include layout="@layout/header_course" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <com.tab.viewpager.jwc.NoScrollListView
+                    android:id="@+id/listViewLeft"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="9">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/ll_load"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <ProgressBar
+                            android:id="@+id/progress"
+                            style="?android:attr/progressBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="30dp"
+                            android:layout_marginTop="30dp" />
+
+                        <TextView
+                            android:id="@+id/tv"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:text="正在加载..."
+                            android:textColor="@color/colorPrimary" />
+
+                    </LinearLayout>
+
+                    <com.tab.viewpager.jwc.NoScrollListView
+                        android:id="@+id/listViewRight"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:listSelector="@android:color/transparent" />
+                </FrameLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

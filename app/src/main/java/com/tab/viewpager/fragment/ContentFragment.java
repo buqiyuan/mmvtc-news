@@ -158,7 +158,6 @@ public class ContentFragment extends Fragment {
                 bundle.putString("href", href);
                 Intent intent = new Intent(getActivity(), ArticleActive.class);
                 intent.putExtras(bundle);
-//                getActivity().finish();
                 startActivity(intent);
             }
         });

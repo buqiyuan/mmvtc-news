@@ -51,5 +51,16 @@
     <style name="MyAppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="MyAppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
+    <style name="EditTextDrawableLeft">
+        <item name="android:drawablePadding">12dp</item>
+    </style>
+    <style name="tab_menu_item">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@drawable/tab_menu_text</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>
