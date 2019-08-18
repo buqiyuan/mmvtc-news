@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.tab.viewpager.R;
 import com.tab.viewpager.activity.MainActivity;
@@ -27,6 +28,8 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+
+import static com.tab.viewpager.R.id.toolbar;
 
 /**
  * Created by bqy on 2019/7/6.
@@ -44,8 +47,8 @@ public class ChangePasswordActivity extends Activity {
     private String viewstate;
     private SimpleAdapter adapter;
     private TextView tv_change;
-    private TextView tv_title;
     private ImageView iv_back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +58,15 @@ public class ChangePasswordActivity extends Activity {
         et_new_password = (EditText) findViewById(R.id.et_new_password);
         et_new_password_again = (EditText) findViewById(R.id.et_new_password_again);
         tv_change = (TextView) findViewById(R.id.tv_change);
-        tv_title = (TextView) findViewById(R.id.tv_title);
-        iv_back = (ImageView) findViewById(R.id.iv_back);
-        tv_title.setText("修改密码");
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();//返回
+            }
+        });
+
         read();
         initEvnt();
         new Thread(viewstateRun).start();
@@ -81,12 +90,6 @@ private void initEvnt(){
                 return;
             }
             new Thread(contentRun).start();
-        }
-    });
-    iv_back.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            finish();
         }
     });
 }

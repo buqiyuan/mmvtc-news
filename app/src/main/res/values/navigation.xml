@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="mainItemsName">
+        <item>首页</item>
+        <item>系部新闻</item>
+        <item>学校概况</item>
+        <item>其他</item>
+    </string-array>
+    <integer-array name="mainItemsIcon">
+        <item>@drawable/dynamic_home</item>
+        <item>@drawable/dynamic_grade</item>
+        <item>@drawable/dynamic_school</item>
+        <item>@drawable/dynamic_more</item>
+    </integer-array>
+</resources>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,41 +10,34 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/tb"
-        app:titleTextColor="@color/white"
-        android:background="@color/colorPrimary"
-        app:popupTheme="@style/toolbarMenuStyle"
-        android:title="@string/title_activity_main"
-        app:theme="@style/toolbarTheme"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:title="@string/title_activity_main"
+        app:popupTheme="@style/toolbarMenuStyle"
+        app:theme="@style/toolbarTheme"
+        app:titleTextColor="@color/white">
 
 
     </android.support.v7.widget.Toolbar>
 
-    <com.youth.banner.Banner
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/banner"
-        android:layout_width="match_parent"
-        android:layout_height="200dp" />
-
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tl"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/colorPrimary"
-        app:tabMode="scrollable"
-        app:tabSelectedTextColor="@color/colorPrimary"
-        app:tabTextColor="@color/gray">
-
-    </android.support.design.widget.TabLayout>
-
     <android.support.v4.view.ViewPager
         android:id="@+id/vp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tl_bottom"
+        android:layout_below="@+id/tb">
 
     </android.support.v4.view.ViewPager>
 
-</LinearLayout>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:tabBackground="@color/tabBackground"
+        app:tabIndicatorHeight="0dp"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/tabTextSelectColor" />
+
+</RelativeLayout>

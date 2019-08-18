@@ -3,42 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/titleBackgroundColor"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/iv_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:src="@drawable/back"
-        android:layout_marginLeft="16dp"
-        android:layout_centerVertical="true" />
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        app:titleTextColor="@color/white"
+        android:background="@color/colorPrimary"
+        app:popupTheme="@style/toolbarMenuStyle"
+        app:theme="@style/toolbarTheme"
+        app:navigationIcon="@drawable/back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_toRightOf="@+id/iv_back"
-        android:layout_marginLeft="16dp"
-        android:layout_centerVertical="true"
-        android:maxLines="1"
-        tools:text="title"
-        android:ellipsize="end"
-        android:textColor="@color/titleColor" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="修改密码"
+            android:textSize="20sp"
+            android:textColor="@color/white"/>
 
-    <TextView
-        android:id="@+id/tv_more"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginRight="16dp"
-        tools:text="more"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:textColor="@color/titleColor" />
+    </android.support.v7.widget.Toolbar>
 </RelativeLayout>

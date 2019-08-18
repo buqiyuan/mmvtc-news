@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -15,37 +16,37 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
-import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tab.viewpager.R;
 import com.tab.viewpager.adapter.MyViewpaerAdapter;
-import com.tab.viewpager.fragment.ContentFragment;
+import com.tab.viewpager.fragment.AboutSchoolFragment;
+import com.tab.viewpager.fragment.DepartmentFragment;
+import com.tab.viewpager.fragment.HomeFragment;
 import com.tab.viewpager.jwc.ChangePasswordActivity;
 import com.tab.viewpager.jwc.CourseFragment;
 import com.tab.viewpager.jwc.FragmentAdapter;
 import com.tab.viewpager.jwc.LoginActivity;
 import com.tab.viewpager.jwc.MeFragment;
+import com.tab.viewpager.jwc.MoreFragment;
 import com.tab.viewpager.jwc.ScoreFragment;
 import com.youth.banner.Banner;
 
@@ -64,12 +65,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.R.attr.drawable;
-import static android.R.attr.name;
-import static java.security.AccessController.getContext;
-
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, TabLayout.OnTabSelectedListener {
     private Toolbar mToolbar;
     private TabLayout tabLayout;
     private ViewPager mViewPager;
@@ -92,7 +89,6 @@ public class MainActivity extends AppCompatActivity
     private static String courseUrl = "";
     private ViewPager pager;
     private TextView tv_studentName;
-    private TextView page_title;
     private FragmentAdapter adapter;
     //tab标题
     private List<String> titles = new ArrayList<>();
@@ -107,19 +103,30 @@ public class MainActivity extends AppCompatActivity
     private Boolean isLogin = false;
     private TextView tv_name;
     private TextView tv_desc;
+    private TabLayout tab_bottom;
+    private String[] itemsName;
+    private FragmentManager fragmentManager;
+    private FrameLayout frameLayout;
+    private static Document doc;
+
+    public static Document getDocument() {
+        return doc;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        itemsName = getResources().getStringArray(R.array.mainItemsName);
         initViews();
+        initDatas();
+        initEvents();
         //banner设置方法全部调用完毕时最后调用
         new Thread(new Runnable() {
             @Override
             public void run() {
                 //需要在子线程中处理的逻辑
-                Document doc = null;
+                doc = null;
                 try {
                     doc = Jsoup.connect("http://www.mmvtc.cn/templet/default/index.jsp").get();
                     Elements imgs = doc.select("img[src^=slider]");
@@ -142,12 +149,22 @@ public class MainActivity extends AppCompatActivity
         }).start();
     }
 
+
+    private void initTab() {
+        TypedArray typedArray = getResources().obtainTypedArray(R.array.mainItemsIcon);
+        if (itemsName.length != typedArray.length()) {
+            throw new IllegalStateException("The items name length must same with icons ");
+        }
+        for (int i = 0; i < itemsName.length; i++) {
+            tab_bottom.addTab(tab_bottom.newTab().setIcon(typedArray.getResourceId(i, 0)).setTag(i));
+        }
+        typedArray.recycle();
+    }
+
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    initDatas();
-                    initEvents();
                     new Thread(avatarRun).start();
                     break;
                 case 2:
@@ -184,6 +201,16 @@ public class MainActivity extends AppCompatActivity
                         msg.what = 2;
                         handler.sendMessage(msg);
                     }
+                } else if (httpResponse.getStatusLine().getStatusCode() == 302) {
+                    String html = EntityUtils.toString(httpResponse.getEntity());
+                    Document dom = Jsoup.parse(html);
+                    String text = dom.select("body").text();
+                    if (text.toLowerCase().replaceAll("\\s*", "") == "objectmovedtohere") {
+                        isLogin = false;
+                        tv_name.setText("登录身份已过期，请重新登录");
+                        tv_desc.setText("");
+                        Toast.makeText(MainActivity.this, "登录身份已过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -219,26 +246,46 @@ public class MainActivity extends AppCompatActivity
     private void initViews() {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         headView = navigationView.inflateHeaderView(R.layout.nav_header_main);
-        mToolbar = (Toolbar) findViewById(R.id.tb);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
         tabLayout = (TabLayout) findViewById(R.id.tl);
-        mViewPager = (ViewPager) findViewById(R.id.vp);
         iv_avatar = (ImageView) headView.findViewById(R.id.iv_avatar);
         tv_name = (TextView) headView.findViewById(R.id.tv_name);
         tv_desc = (TextView) headView.findViewById(R.id.tv_desc);
-        banner = (Banner) findViewById(R.id.banner);
-//        mToolbar.setTitle("首页");
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar.setTitle("首页");
 
+        setSupportActionBar(mToolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//左侧抽屉
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+                this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 //        setSupportActionBar(mToolbar);
+
+        tab_bottom = (TabLayout) findViewById(R.id.tl_bottom);
+        if (tab_bottom.getTabCount() > 0) {
+            tab_bottom.getTabAt(0).select();
+            switchTabSelect(0);
+        }
+        initTab();
+        tab_bottom.addOnTabSelectedListener(this);
+
+        List<Fragment> fragments = new ArrayList<Fragment>();
+        fragments.add(new HomeFragment());
+        fragments.add(new DepartmentFragment());
+        fragments.add(new AboutSchoolFragment());
+        fragments.add(new MoreFragment());
+        adapter = new FragmentAdapter(getSupportFragmentManager(), fragments);
+        pager = (ViewPager) findViewById(R.id.vp);
+        pager.setOffscreenPageLimit(4);
+        pager.setAdapter(adapter);
+        pager.setCurrentItem(0);
+        pager.setOnPageChangeListener(this);
+        fragmentManager = getSupportFragmentManager();
     }
 
     private void initDatas() {
@@ -280,32 +327,9 @@ public class MainActivity extends AppCompatActivity
                 tv_desc.setText("这人很懒，什么也没留下。");
             }
         }
-
-
-        titles.add("学院新闻");
-        titles.add("通知公告");
-        titles.add("学术信息");
-        titles.add("系部动态");
-        titles.add("高职高专动态");
-
-        Fragment fragment1 = ContentFragment.newInstance(newsLink);
-        Fragment fragment2 = ContentFragment.newInstance(noticeLink);
-        Fragment fragment3 = ContentFragment.newInstance(xueshuLink);
-        Fragment fragment4 = ContentFragment.newInstance(xibuLink);
-        Fragment fragment5 = ContentFragment.newInstance(gaozhuanLink);
-        fragments.add(fragment1);
-        fragments.add(fragment2);
-        fragments.add(fragment3);
-        fragments.add(fragment4);
-        fragments.add(fragment5);
     }
 
     private void initEvents() {
-        //设置图片加载器
-        banner.setImages(images)
-                .setImageLoader(new GlideImageLoader())
-                .setDelayTime(3000)
-                .start();
         //给头像注册点击事件
         iv_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -319,27 +343,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_search:
-                        //TODO
-                        Toast.makeText(MainActivity.this, "别点了！我只是个装饰", Toast.LENGTH_SHORT).show();
-                        break;
-                    case R.id.menu_about:
-                        //TODO
-                        Toast.makeText(MainActivity.this, "不好意思，我也是！", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-                return false;
-            }
-        });
-
-        myViewpaerAdapter = new MyViewpaerAdapter(getSupportFragmentManager(), titles, fragments);
-
-        mViewPager.setAdapter(myViewpaerAdapter);
-        tabLayout.setupWithViewPager(mViewPager);
+//        myViewpaerAdapter = new MyViewpaerAdapter(getSupportFragmentManager(), titles, fragments);
     }
 
     @Override
@@ -384,11 +388,24 @@ public class MainActivity extends AppCompatActivity
 //            关于
             if (alertDialog == null) {
                 alertDialog = new AlertDialog.Builder(MainActivity.this).
-                        setMessage("茂名职业技术学院教务管理系统模拟登陆\n\n" +
-                                "Android实训作业专用\n\n" +
-                                "开发单位: 正方软件股份有限公司").
+                        setMessage("主题：茂职院校园信息APP\n\n" +
+                                "用途：毕业设计\n\n" +
+                                "作者：猿谋人\n\n" +
+                                "BUG反馈: 1743369777@qq.com").
                         setPositiveButton(R.string.ok, null).
                         create();
+            }
+            alertDialog.show();
+            alertDialog = null;
+            return true;
+        } else if (id == R.id.nav_state) {
+//            说明
+            if (alertDialog == null) {
+                alertDialog = new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("简要说明")
+                        .setMessage("在退出软件后,登录状态最多保持30分钟(网站cookie一般时效为30分钟),再次打开软件时需要重新输入验证码进行登录")
+                        .setPositiveButton(R.string.ok, null)
+                        .create();
             }
             alertDialog.show();
             alertDialog = null;
@@ -449,6 +466,67 @@ public class MainActivity extends AppCompatActivity
 //        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 //        drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        int tag = Integer.parseInt(String.valueOf(tab.getTag()));
+        switchTabSelect(tag);
+        tab_bottom.setTag(tag);
+        pager.setCurrentItem(tag);
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int arg0) {
+        if (arg0 == 2) {
+            switchTabSelect(pager.getCurrentItem());
+            switch (pager.getCurrentItem()) {
+                case 0:
+                    tab_bottom.getTabAt(0).select();
+                    break;
+                case 1:
+                    tab_bottom.getTabAt(1).select();
+                    break;
+                case 2:
+                    tab_bottom.getTabAt(2).select();
+                    break;
+                case 3:
+                    tab_bottom.getTabAt(3).select();
+                    break;
+            }
+        }
+    }
+
+    private void switchTabSelect(int i) {
+        if (i == 0) {
+            mToolbar.setTitle("首页");
+        } else if (i == 1) {
+            mToolbar.setTitle("系部新闻");
+        } else if (i == 2) {
+            mToolbar.setTitle("学校概况");
+        } else if (i == 3) {
+            mToolbar.setTitle("其他");
+        }
     }
 
     @Override

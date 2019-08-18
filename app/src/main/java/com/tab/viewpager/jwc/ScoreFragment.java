@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
 import com.tab.viewpager.R;
 import com.tab.viewpager.activity.MainActivity;
@@ -112,6 +113,13 @@ private View loadMoreView;
                 Document html = Jsoup.parse(content);
                 Elements e = html.select("input[name=__VIEWSTATE]");
                 viewstate = e.get(0).attr("value");
+            }else if (httpResponse.getStatusLine().getStatusCode() == 302) {
+                String html = EntityUtils.toString(httpResponse.getEntity());
+                Document dom = Jsoup.parse(html);
+                String text = dom.select("body").text();
+                if (text.toLowerCase().replaceAll("\\s*", "") == "objectmovedtohere") {
+                    Toast.makeText(ScoreFragment.this, "登录身份已过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

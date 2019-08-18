@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tab.viewpager.R;
 import com.tab.viewpager.activity.MainActivity;
@@ -34,10 +35,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static com.tab.viewpager.R.id.ll_load;
-import static com.tab.viewpager.R.id.tv_title;
-
 
 public class CourseFragment extends AppCompatActivity {
 
@@ -178,6 +175,13 @@ public class CourseFragment extends AppCompatActivity {
                     LogUtils.e("courseList", courseList.toString());
                 }
 
+            }else if (httpResponse.getStatusLine().getStatusCode() == 302) {
+                String html = EntityUtils.toString(httpResponse.getEntity());
+                Document dom = Jsoup.parse(html);
+                String text = dom.select("body").text();
+                if (text.toLowerCase().replaceAll("\\s*", "") == "objectmovedtohere") {
+                    Toast.makeText(CourseFragment.this, "登录身份已过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

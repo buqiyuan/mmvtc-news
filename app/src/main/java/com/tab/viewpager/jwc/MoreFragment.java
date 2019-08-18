@@ -1,6 +1,7 @@
 package com.tab.viewpager.jwc;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
@@ -8,12 +9,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tab.viewpager.R;
+import com.tab.viewpager.activity.MainActivity;
+import com.tab.viewpager.activity.TimeTableActive;
+import com.tab.viewpager.activity.WebViewActivity;
 
+import static android.R.attr.id;
 import static android.content.Context.MODE_PRIVATE;
+import static com.tab.viewpager.R.id.iv_avatar;
+import static com.tab.viewpager.R.id.tv_desc;
+import static com.tab.viewpager.R.id.tv_name;
+import static com.tab.viewpager.R.id.tv_timetable;
 
 
 public class MoreFragment extends BaseFragment implements View.OnClickListener {
-    private TextView tvChangePassword;
+    private TextView tv_timetable;
     private TextView tvGradeTest;
     private TextView tvAbout;
     private TextView tvExit;
@@ -31,8 +40,8 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     protected void initView(View view) {
-        tvChangePassword = (TextView) view.findViewById(R.id.tv_change_password);
-        tvChangePassword.setOnClickListener(this);
+        tv_timetable = (TextView) view.findViewById(R.id.tv_timetable);
+        tv_timetable.setOnClickListener(this);
         tvGradeTest = (TextView) view.findViewById(R.id.tv_grade_test);
         tvGradeTest.setOnClickListener(this);
         tvAbout = (TextView) view.findViewById(R.id.tv_about);
@@ -50,29 +59,37 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View view) {
         int viewId = view.getId();
         if (viewId == R.id.tv_exit) {
-            Intent intent = new Intent(getContext(), LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            SharedPreferences sp = getActivity().getSharedPreferences("user", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sp.edit();
-            editor.remove("password");
-            editor.commit();
+//            退出登录
+            if (alertDialog == null) {
+                alertDialog = new AlertDialog.Builder(getActivity()).
+                        setMessage("真的要狠心离开吗？").
+                        setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Toast.makeText(getActivity(), "goodbye~！", Toast.LENGTH_SHORT).show();
+                                getActivity().finish();
+                                System.exit(0);
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                    Toast.makeText(MainActivity.this,"你点击了取消",Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .create();
+            }
+            alertDialog.show();
+            alertDialog = null;
+        } else if (viewId == R.id.tv_timetable) {
+//            打开作息时间表
+            Intent intent = new Intent(getActivity(), TimeTableActive.class);
             startActivity(intent);
         } else if (viewId == R.id.tv_grade_test) {
             Toast.makeText(getContext(), "啥也没有！占位置的", Toast.LENGTH_SHORT).show();
-        } else if (viewId == R.id.tv_change_password) {
-            Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
         } else if (viewId == R.id.tv_about) {
-            if (alertDialog == null) {
-                alertDialog = new AlertDialog.Builder(getContext()).
-                        setMessage("茂名职业技术学院教务管理系统模拟登陆\n\n" +
-                                "Android实训作业专用\n\n" +
-                                "开发单位: 正方软件股份有限公司").
-                        setPositiveButton(R.string.ok, null).
-                        create();
-            }
-            alertDialog.show();
+            Intent intent = new Intent(getActivity(), WebViewActivity.class);
+            startActivity(intent);
         }
     }
 }

@@ -63,4 +63,9 @@
         <item name="android:textColor">@drawable/tab_menu_text</item>
         <item name="android:textSize">12sp</item>
     </style>
+    <!--设置tabLayout样式-->
+    <style name="TabLayoutTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@android:color/holo_blue_dark</item>
+    </style>
 </resources>

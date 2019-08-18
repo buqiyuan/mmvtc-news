@@ -12,13 +12,23 @@
         android:layout_height="match_parent">
         <android.support.v7.widget.Toolbar
             android:id="@+id/tb"
-            app:titleTextColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
+            app:navigationIcon="@drawable/back"
             app:popupTheme="@style/toolbarMenuStyle"
             app:theme="@style/toolbarTheme"
-            app:title="新闻详情"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            app:titleTextColor="@color/white">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="新闻详情"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
         </android.support.v7.widget.Toolbar>
         <WebView
             android:id="@+id/webview"

@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -216,8 +217,90 @@ public class ContentFragment extends Fragment {
                 try {
                     Log.e("link", link + "&pn=" + start);
                     doc = Jsoup.connect(link + "&pn=" + start).get();
-                    // 如果不是学术网
-                    if (link.indexOf("xskyw") == -1) {
+                    //获取总的页码
+                    if (!TextUtils.isEmpty(doc.select("#htmlPageCount").text().trim())){
+                        total_index = Integer.parseInt(doc.select("#htmlPageCount").text());
+                    }
+                    // 如果是学术网
+                    if (link.indexOf("xskyw") != -1) {
+                        Elements elements = doc.select(".new .Column ul li");
+                        for (Element ele : elements) {
+                            String href = ele.select("a").attr("abs:href");
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("time", ele.select("span").text());
+                            map.put("pv", "阅读(0)");
+                            map.put("content", ele.select("a").text());
+                            map.put("href", href);
+                            datas.add(map);
+                        }
+                        //如果是土木工程系
+                    } else if (link.indexOf("tmgcx") != -1) {
+                        Elements elements = doc.select(".content_wrap .info ul li");
+                        for (Element ele : elements) {
+                            String href = ele.select("a").attr("abs:href");
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("time", ele.select("span").text());
+                            map.put("pv", "");
+                            map.put("content", ele.select("a").text());
+                            map.put("href", href);
+                            datas.add(map);
+                        }
+                    } else if (link.indexOf("hxgcx") != -1) { //如果是化学程系
+                        Elements elements = doc.select(".list1-you ul li");
+                        for (Element ele : elements) {
+                            String href = ele.select("a").attr("abs:href");
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("time", ele.select(".r").text());
+                            map.put("pv", "");
+                            map.put("content", ele.select("a").text());
+                            map.put("href", href);
+                            datas.add(map);
+                        }
+                    } else if (link.indexOf("jjglx") != -1) { //如果是经济管理程系
+                        Elements elements = doc.select("#zhaopin1 ul li");
+                        for (Element ele : elements) {
+                            String href = ele.select("a").attr("abs:href");
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("time", ele.select(".riqi").text());
+                            map.put("pv", "");
+                            map.put("content", ele.select("a").text());
+                            map.put("href", href);
+                            datas.add(map);
+                        }
+                    } else if (link.indexOf("jdxxx") != -1) { //如果是机电系
+                        Elements elements = doc.select(".columnMain ul li");
+                        for (Element ele : elements) {
+                            String href = ele.select("a").attr("abs:href");
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("time", ele.select(".columnTitleTime").text());
+                            map.put("pv", "");
+                            map.put("content", ele.select(".columnTitleContent").text());
+                            map.put("href", href);
+                            datas.add(map);
+                        }
+                    } else if (link.indexOf("jsjgcx") != -1) { //如果是计算机系
+                        Elements elements = doc.select(".cbox ul li");
+                        for (Element ele : elements) {
+                            String href = ele.select("a").attr("abs:href");
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("time", ele.select(".text-right").text());
+                            map.put("pv", "");
+                            map.put("content", ele.select("a").text());
+                            map.put("href", href);
+                            datas.add(map);
+                        }
+                    } else if (link.indexOf("skb") != -1) { //如果是社科基础部
+                        Elements elements = doc.select("#list-you ul li");
+                        for (Element ele : elements) {
+                            String href = ele.select("a").attr("abs:href");
+                            Map<String, String> map = new HashMap<String, String>();
+                            map.put("time", ele.select("span").text());
+                            map.put("pv", "");
+                            map.put("content", ele.select("a").text());
+                            map.put("href", href);
+                            datas.add(map);
+                        }
+                    } else {
                         Elements elements = doc.select(".right_zi .list-unstyled li");
                         for (Element ele : elements) {
                             String href = ele.select("a").attr("abs:href");
@@ -230,17 +313,6 @@ public class ContentFragment extends Fragment {
                                 map.put("href", ele.select("a").attr("abs:href"));
                                 datas.add(map);
                             }
-                        }
-                    } else {
-                        Elements elements = doc.select(".new .Column ul li");
-                        for (Element ele : elements) {
-                            String href = ele.select("a").attr("abs:href");
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("time", ele.select("span").text());
-                            map.put("pv", "阅读(0)");
-                            map.put("content", ele.select("a").text());
-                            map.put("href", href);
-                            datas.add(map);
                         }
                     }
                     Log.e("datas", datas.toString());

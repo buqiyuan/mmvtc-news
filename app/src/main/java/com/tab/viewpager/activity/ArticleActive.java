@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -34,6 +35,18 @@ public class ArticleActive extends AppCompatActivity {
         webView = (WebView) findViewById(R.id.webview);
         ll_load = (LinearLayout) findViewById(R.id.ll_load);
         ll_load.setVisibility(View.VISIBLE);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tb);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();//返回
+            }
+        });
         //支持javascript
         webView.getSettings().setJavaScriptEnabled(true);
 //// 设置可以支持缩放
@@ -70,7 +83,7 @@ public class ArticleActive extends AppCompatActivity {
                             .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36")
                             .get();
                     doc.select("*").attr("style", "max-width:100vw;overflow:hidden;");
-                    doc.select("body img").attr("style", "display: block;margin: 0 5vw;max-width: 90vw;height: auto;");
+                    doc.select("body img").attr("style", "display: block;margin: 0 auto;max-width: 100%;height: auto;");
 
                     if (href.indexOf("xskyw") != -1) {
                         // 学术网标题
@@ -109,6 +122,41 @@ public class ArticleActive extends AppCompatActivity {
                         doc.select("#article_container.list_nr span").attr("style", "font-size:18px;color:#666");
                         String body = doc.select("#article_container .list_nr").toString();
                         html = title + body;
+                    } else if (href.indexOf("jjglx") != -1) {
+                        // 经济管理系标题
+                        doc.select("#content_wenzhang h3").attr("style", "font-size:20px;color:#666;text-align:center;font-weight:800;");
+                        String title = doc.select("#content_wenzhang h3").toString();
+                        String subTitle = doc.select("#content_wenzhang #date").attr("style", "font-size:14px;color:#999;text-align:center;").toString();
+                        doc.select("#content_wenzhang .news_content p").attr("style", "font-size:18px;color:#666;text-indent: 36px;");
+                        doc.select("#content_wenzhang .news_content span").attr("style", "font-size:18px;color:#666");
+                        String body = doc.select("#content_wenzhang .news_content").toString();
+                        html = title + subTitle + body;
+                    }else if (href.indexOf("jdxxx") != -1) {
+                        // 机电系标题
+                        doc.select(".articleMain .articleTitle").attr("style", "font-size:20px;color:#666;text-align:center;font-weight:800;");
+                        String title = doc.select(".articleMain .articleTitle").toString();
+                        String subTitle = doc.select(".articleMain .articleInfo").attr("style", "font-size:14px;color:#999;text-align:center;").toString();
+                        doc.select(".articleMain .articleContent p").attr("style", "font-size:18px;color:#666;text-indent: 36px;");
+                        doc.select(".articleMain .articleContent span").attr("style", "font-size:18px;color:#666");
+                        String body = doc.select(".articleMain .articleContent").toString();
+                        html = title + subTitle + body;
+                    }else if (href.indexOf("jsjgcx") != -1) {
+                        // 机电系标题
+                        doc.select(".main .newsTitle").attr("style", "font-size:20px;color:#666;text-align:center;font-weight:800;");
+                        String title = doc.select(".main .newsTitle").toString();
+                        doc.select(".main .newsContent p").attr("style", "font-size:18px;color:#666;text-indent: 36px;");
+                        doc.select(".main .newsContent span").attr("style", "font-size:18px;color:#666");
+                        String body = doc.select(".main .newsContent").toString();
+                        html = title + body;
+                    }else if (href.indexOf("skb") != -1) {
+                        // 社科基础部标题
+                        doc.select("#list-you h3").attr("style", "font-size:20px;color:#666;text-align:center;font-weight:800;");
+                        String title = doc.select("#list-you h3").toString();
+                        String subTitle = doc.select("#list-you #date").attr("style", "font-size:14px;color:#999;text-align:center;").toString();
+                        doc.select("#list-you #news_content p").attr("style", "font-size:18px;color:#666;text-indent: 36px;");
+                        doc.select("#list-you #news_content span").attr("style", "font-size:18px;color:#666");
+                        String body = doc.select("#list-you #news_content").toString();
+                        html = title + subTitle + body;
                     } else {
                         // 文章标题
                         String title = doc.select(".job__top__right .mt-20 .ali-ol-experiment-title")
