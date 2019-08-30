@@ -13,7 +13,6 @@
         android:layout_gravity="start"
         android:gravity="center"
         android:text="@string/monday"
-        android:background="@drawable/textview_border"
         android:textColor="@color/courseTextColor"
         android:textSize="12sp" />
 
@@ -24,7 +23,6 @@
         android:layout_weight="1"
         android:layout_gravity="start"
         android:gravity="center"
-        android:background="@drawable/textview_border"
         android:text="@string/tuesday"
         android:textColor="@color/courseTextColor"
         android:textSize="12sp" />
@@ -37,7 +35,6 @@
         android:layout_gravity="start"
         android:gravity="center"
         android:text="@string/wednesday"
-        android:background="@drawable/textview_border"
         android:textColor="@color/courseTextColor"
         android:textSize="12sp" />
 
@@ -49,7 +46,6 @@
         android:layout_gravity="start"
         android:gravity="center"
         android:text="@string/thursday"
-        android:background="@drawable/textview_border"
         android:textColor="@color/courseTextColor"
         android:textSize="12sp" />
 
@@ -61,7 +57,6 @@
         android:layout_gravity="start"
         android:gravity="center"
         android:text="@string/friday"
-        android:background="@drawable/textview_border"
         android:textColor="@color/courseTextColor"
         android:textSize="12sp" />
 
@@ -73,7 +68,6 @@
         android:layout_gravity="start"
         android:gravity="center"
         android:text="@string/saturday"
-        android:background="@drawable/textview_border"
         android:textColor="@color/courseTextColor"
         android:textSize="12sp" />
 

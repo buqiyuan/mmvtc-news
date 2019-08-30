@@ -1,7 +1,10 @@
 package com.tab.viewpager.jwc;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import static com.tab.viewpager.R.id.videoview;
 
 
 public abstract class BaseFragment extends Fragment implements BaseView{
@@ -36,14 +41,12 @@ public abstract class BaseFragment extends Fragment implements BaseView{
             loadingDialog.show();
         }
     }
-
     @Override
     public void hideLoadingDialog() {
         if (loadingDialog != null && loadingDialog.isShowing()) {
             loadingDialog.dismiss();
         }
     }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -99,5 +102,9 @@ public abstract class BaseFragment extends Fragment implements BaseView{
             loadingDialog.dismiss();
             loadingDialog = null;
         }
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 }

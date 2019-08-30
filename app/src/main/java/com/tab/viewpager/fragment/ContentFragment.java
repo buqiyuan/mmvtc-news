@@ -181,7 +181,7 @@ public class ContentFragment extends Fragment {
                         mAdapter.notifyDataSetChanged();
                         //刷新完成
                         Toast.makeText(getActivity(), "刷新成功！", Toast.LENGTH_SHORT).show();
-                        page_index = 0;
+                        page_index = 1;
                         layout.setRefreshing(false);
                     }
                 }, 0);

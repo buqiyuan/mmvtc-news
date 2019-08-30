@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Handler;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +22,7 @@ import static com.tab.viewpager.R.id.iv_avatar;
 import static com.tab.viewpager.R.id.tv_desc;
 import static com.tab.viewpager.R.id.tv_name;
 import static com.tab.viewpager.R.id.tv_timetable;
+import static com.tab.viewpager.R.id.videoview;
 
 
 public class MoreFragment extends BaseFragment implements View.OnClickListener {
@@ -27,6 +31,7 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
     private TextView tvAbout;
     private TextView tvExit;
     private AlertDialog alertDialog;
+    private CustomVideoView videoview;
 
     @Override
     protected String getTitleName() {
@@ -39,6 +44,12 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        autoPlay();
+    }
+
+    @Override
     protected void initView(View view) {
         tv_timetable = (TextView) view.findViewById(R.id.tv_timetable);
         tv_timetable.setOnClickListener(this);
@@ -48,8 +59,23 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
         tvAbout.setOnClickListener(this);
         tvExit = (TextView) view.findViewById(R.id.tv_exit);
         tvExit.setOnClickListener(this);
+        //加载视频资源控件
+        videoview = (CustomVideoView) view.findViewById(R.id.videoview);
     }
 
+    public void autoPlay(){
+        //设置播放加载路径
+        videoview.setVideoURI(Uri.parse("android.resource://" + getActivity().getPackageName() + "/" + R.raw.lol_hayato));
+        //播放
+        videoview.start();
+        //循环播放
+        videoview.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                videoview.start();
+            }
+        });
+    }
     @Override
     protected void initData() {
 

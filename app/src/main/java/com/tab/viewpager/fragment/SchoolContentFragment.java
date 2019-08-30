@@ -107,7 +107,6 @@ public class SchoolContentFragment extends Fragment {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case 1:
-                    Log.e("html", html);
                     ll_load.setVisibility(View.GONE);
                     webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);
                     break;

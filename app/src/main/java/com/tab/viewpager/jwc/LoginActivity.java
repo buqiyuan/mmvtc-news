@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,6 +44,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
 public class LoginActivity extends Activity implements OnClickListener {
     private EditText et_name, et_password, et_vertify;
     private ImageView iv_vertify;
@@ -62,6 +65,9 @@ public class LoginActivity extends Activity implements OnClickListener {
     private String xgPswUrl = "";
     private String courseUrl = "";
     private String refererUrl = "";
+    SweetAlertDialog loginDialog = null;
+    SweetAlertDialog errorDialog = null;
+    SweetAlertDialog successDialog = null;
     //创建播放视频的控件对象
     private CustomVideoView videoview;
     private boolean flag = false;
@@ -70,7 +76,15 @@ public class LoginActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        loginDialog = new SweetAlertDialog(this, SweetAlertDialog.PROGRESS_TYPE);
+        errorDialog = new SweetAlertDialog(this, SweetAlertDialog.ERROR_TYPE);
+        successDialog = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE);
+        errorDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+            @Override
+            public void onClick(SweetAlertDialog sweetAlertDialog) {
+                sweetAlertDialog.dismiss();
+            }
+        });
         init();// 初始化控件
         read();// 读取保存的账号密码
         initView();
@@ -109,6 +123,7 @@ public class LoginActivity extends Activity implements OnClickListener {
         iv_vertify.setOnClickListener(this);
         btn_login.setOnClickListener(this);
     }
+
     private void initView() {
         //加载视频资源控件
         videoview = (CustomVideoView) findViewById(R.id.videoview);
@@ -121,6 +136,13 @@ public class LoginActivity extends Activity implements OnClickListener {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
                 videoview.start();
+            }
+        });
+        //设置为静音
+        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer) {
+                mediaPlayer.setVolume(0f, 0f);
             }
         });
     }
@@ -140,43 +162,53 @@ public class LoginActivity extends Activity implements OnClickListener {
     }
 
     private void loginFail(String tip) {
+
         Toast.makeText(LoginActivity.this, tip, Toast.LENGTH_LONG).show();
         et_vertify.setText("");
         new Thread(refreshRun).start();
     }
+
     Handler handler = new Handler() {
         public void handleMessage(Message msg) {
+            loginDialog.dismiss();
             switch (msg.what) {
                 case 1:
                     Bitmap bitmap = (Bitmap) msg.obj;
                     iv_vertify.setImageBitmap(bitmap);
                     break;
                 case 2:
-                    loginFail("验证码错误");
+                    errorDialog.setTitleText("验证码错误").show();
+                    new Thread(refreshRun).start();
                     break;
                 case 3:
-                    loginFail("密码错误");
+                    errorDialog.setTitleText("密码错误").show();
+                    new Thread(refreshRun).start();
                     break;
                 case 4:
-                    loginFail("用户名不存在或未按照要求参加教学活动");
+                    errorDialog.setTitleText("用户名不存在或未按照要求参加教学活动").show();
+                    new Thread(refreshRun).start();
                     break;
                 case 5:
-                    Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_LONG)
+                    successDialog.setTitleText("登陆成功")
                             .show();
-
-                    Intent intent = new Intent(LoginActivity.this,
-                            MainActivity.class);
-                    intent.putExtra("isLogin", true);
-                    intent.putExtra("name", name);
-                    intent.putExtra("studentName", studentName);
-                    intent.putExtra("cookie", cookie);
-                    intent.putExtra("viewstate", viewstate);
-                    intent.putExtra("infoUrl", infoUrl);
-                    intent.putExtra("xgPswUrl", xgPswUrl);
-                    intent.putExtra("scoreUrl", scoreUrl);
-                    intent.putExtra("courseUrl", courseUrl);
-                    startActivity(intent);
-                    LoginActivity.this.finish();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(LoginActivity.this,
+                                    MainActivity.class);
+                            intent.putExtra("isLogin", true);
+                            intent.putExtra("name", name);
+                            intent.putExtra("studentName", studentName);
+                            intent.putExtra("cookie", cookie);
+                            intent.putExtra("viewstate", viewstate);
+                            intent.putExtra("infoUrl", infoUrl);
+                            intent.putExtra("xgPswUrl", xgPswUrl);
+                            intent.putExtra("scoreUrl", scoreUrl);
+                            intent.putExtra("courseUrl", courseUrl);
+                            startActivity(intent);
+                            finish();
+                        }
+                    }, 1100);
                     break;
             }
         }
@@ -189,13 +221,17 @@ public class LoginActivity extends Activity implements OnClickListener {
         vertify = et_vertify.getText().toString().trim();
 
         if (name.equals("") || password.equals("")) {
-            Toast.makeText(this, "学号或者密码不能为空", Toast.LENGTH_LONG).show();
+            errorDialog.setTitleText("学号或者密码不能为空").show();
             return;
         }
         if (vertify.length() != 4) {
-            Toast.makeText(this, "请输入4位验证码", Toast.LENGTH_LONG).show();
+            errorDialog.setTitleText("请输入4位验证码").show();
             return;
         }
+        loginDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
+        loginDialog.setTitleText("登陆中,请稍后片刻...");
+        loginDialog.setCancelable(true);
+        loginDialog.show();
         new Thread(loginRun).start();
     }
 
@@ -273,13 +309,14 @@ public class LoginActivity extends Activity implements OnClickListener {
             xgPswUrl = xgPsw.replaceAll(studentName, encodeName);
             scoreUrl = cj.replaceAll(studentName, encodeName);
             courseUrl = course.replaceAll(studentName, encodeName);
-            Log.e("courseUrl",courseUrl);
+            Log.e("courseUrl", courseUrl);
             if (cb_isSave.isChecked()) {
                 save(name, password);
             }
         }
         handler.sendMessage(msg);
     }
+
     private void getVertify() {
         try {
             HttpGet httpGet = new HttpGet(urlStr);

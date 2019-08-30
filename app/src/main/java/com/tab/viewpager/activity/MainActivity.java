@@ -26,13 +26,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,10 +55,15 @@ import com.tab.viewpager.jwc.ScoreFragment;
 import com.youth.banner.Banner;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -64,6 +73,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+
+import static android.R.attr.password;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, TabLayout.OnTabSelectedListener {
@@ -81,7 +96,9 @@ public class MainActivity extends AppCompatActivity
     private String studentName;
     private static String cookie;
     private String name;
+    private String password;
     private String url = "http://jwc.mmvtc.cn/";
+    private String autoLoginUrl = "http://jwc.mmvtc.cn/default4.aspx/";
     private static String refererUrl = "";
     private static String infoUrl = "";
     private static String scoreUrl = "";
@@ -108,6 +125,8 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private FrameLayout frameLayout;
     private static Document doc;
+    private String viewstate;
+    private LinearLayout ll_header;
 
     public static Document getDocument() {
         return doc;
@@ -173,48 +192,19 @@ public class MainActivity extends AppCompatActivity
                     Log.e("avatar", avatar.toString());
                     iv_avatar.setImageBitmap(avatar);
                     break;
+                case 3:
+                    isLogin = false;
+                    tv_name.setText("登录身份已过期，请重新登录");
+                    tv_desc.setText("");
+                    Toast.makeText(MainActivity.this, "登录身份已过期，请重新登录！", Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
     };
     Runnable avatarRun = new Runnable() {
         @Override
         public void run() {
-            try {
-                HttpGet httpGet = new HttpGet(infoUrl);
-                httpGet.setHeader("Cookie", cookie);
-                httpGet.setHeader("Referer", infoUrl);
-                HttpClient client = new DefaultHttpClient();
-                HttpResponse httpResponse = client.execute(httpGet);
-                if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                    String html = EntityUtils.toString(httpResponse.getEntity());
-                    Document dom = Jsoup.parse(html);
-                    Log.e("imaUrl", url + dom.select("#xszp").attr("src"));
-                    httpGet = new HttpGet(url + dom.select("#xszp").attr("src"));
-                    httpGet.setHeader("Cookie", cookie);
-                    httpGet.setHeader("Referer", infoUrl);
-                    httpResponse = client.execute(httpGet);
-                    if (httpResponse.getStatusLine().getStatusCode() == 200) {
-                        InputStream is = httpResponse.getEntity().getContent();
-                        Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        Message msg = new Message();
-                        msg.obj = bitmap;
-                        msg.what = 2;
-                        handler.sendMessage(msg);
-                    }
-                } else if (httpResponse.getStatusLine().getStatusCode() == 302) {
-                    String html = EntityUtils.toString(httpResponse.getEntity());
-                    Document dom = Jsoup.parse(html);
-                    String text = dom.select("body").text();
-                    if (text.toLowerCase().replaceAll("\\s*", "") == "objectmovedtohere") {
-                        isLogin = false;
-                        tv_name.setText("登录身份已过期，请重新登录");
-                        tv_desc.setText("");
-                        Toast.makeText(MainActivity.this, "登录身份已过期，请重新登录！", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            getAvatar();
         }
     };
 
@@ -242,6 +232,139 @@ public class MainActivity extends AppCompatActivity
         canvas.drawBitmap(bitmap, rect, rect, paint);
         return output;
     }
+private void  getAvatar(){
+    if (TextUtils.isEmpty(infoUrl) || isLogin == false) {
+        return;
+    }
+    try {
+        HttpGet httpGet = new HttpGet(infoUrl);
+        httpGet.setHeader("Cookie", cookie);
+        httpGet.setHeader("Referer", infoUrl);
+        httpGet.setHeader("Host", "jwc.mmvtc.cn");
+        httpGet.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
+        HttpClient client = new DefaultHttpClient();
+        HttpResponse httpResponse = client.execute(httpGet);
+        int statusCode = httpResponse.getStatusLine().getStatusCode();
+        if (statusCode == 200) {
+            String html = EntityUtils.toString(httpResponse.getEntity());
+            Document dom = Jsoup.parse(html);
+            Log.e("imaUrl", url + dom.select("#xszp").attr("src"));
+            httpGet = new HttpGet(url + dom.select("#xszp").attr("src"));
+            httpGet.setHeader("Cookie", cookie);
+            httpGet.setHeader("Referer", infoUrl);
+            httpResponse = client.execute(httpGet);
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+                InputStream is = httpResponse.getEntity().getContent();
+                Bitmap bitmap = BitmapFactory.decodeStream(is);
+                Message msg = new Message();
+                msg.obj = bitmap;
+                msg.what = 2;
+                handler.sendMessage(msg);
+            }
+        }
+        Log.e("getStatusCode()", String.valueOf(httpResponse.getStatusLine().getStatusCode()));
+    } catch (Exception e) {
+//                尝试重新登录
+        autoLogin();
+        e.printStackTrace();
+    }
+}
+    private void autoLogin(){
+        getViewstate();
+        HttpPost httpPost = new HttpPost(autoLoginUrl);
+        httpPost.setHeader("Cookie", cookie);
+        Log.e("Cookie", cookie);
+        List<NameValuePair> list = new ArrayList<NameValuePair>();
+
+        list.add(new BasicNameValuePair("TextBox1", name));
+        list.add(new BasicNameValuePair("TextBox2", password));
+        list.add(new BasicNameValuePair("RadioButtonList1", "学生"));
+        list.add(new BasicNameValuePair("__VIEWSTATE", viewstate));
+        list.add(new BasicNameValuePair("Button1", " 登 录 "));
+        try {
+            UrlEncodedFormEntity entity = new UrlEncodedFormEntity(list);
+            httpPost.setEntity(entity);
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse httpResponse = client.execute(httpPost);
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+//                http://jwc.mmvtc.cn/xs_main.aspx?xh=31702150704
+                getCookie();
+            }else {
+                //                判断登陆身份cookie是否失效
+                if (isCookieOverdue(infoUrl)) {
+                    Message msg = new Message();
+                    msg.what = 3;
+                    handler.sendMessage(msg);
+                }
+            }
+        } catch (Exception e) {
+            //                判断登陆身份cookie是否失效
+            if (isCookieOverdue(infoUrl)) {
+                Message msg = new Message();
+                msg.what = 3;
+                handler.sendMessage(msg);
+            }
+            e.printStackTrace();
+        }
+    }
+    private void getCookie() {
+        try {
+            HttpGet httpGet = new HttpGet(" http://jwc.mmvtc.cn/xs_main.aspx?xh=" + name);
+            HttpClient client = new DefaultHttpClient();
+            HttpResponse httpResponse = client.execute(httpGet);
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+                cookie = httpResponse.getFirstHeader("set-cookie").getValue().split(";")[0];// 得到cookie
+//                获取头像
+                getAvatar();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void getViewstate() {
+        HttpGet httpGet = new HttpGet(autoLoginUrl);
+        HttpClient client = new DefaultHttpClient();
+        try {
+            HttpResponse httpResponse = client.execute(httpGet);
+            if (httpResponse.getStatusLine().getStatusCode() == 200) {
+                String content = EntityUtils.toString(httpResponse.getEntity());
+                Document html = Jsoup.parse(content);
+                Elements e = html.select("input[name=__VIEWSTATE]");
+                viewstate = e.get(0).attr("value");
+                Log.e("viewstate=>", viewstate);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static boolean isCookieOverdue(String href) {
+        Document doc = null;
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(href)
+                    .method(Connection.Method.GET)
+                    .execute();
+            Map<String, String> getCookies = response.cookies();
+            String Cookie = getCookies.toString();
+            Cookie = Cookie.substring(Cookie.indexOf("{") + 1, Cookie.lastIndexOf("}"));
+            Cookie = Cookie.replaceAll(",", ";");
+            Log.e("COOKIE", Cookie);
+
+            doc = Jsoup.connect(href)
+                    .header("Cookie", Cookie)
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36")
+                    .get();
+
+            String text = doc.select("body").text();
+            String textInfo = text.toLowerCase().replaceAll("\\s*", "");
+            if (textInfo.indexOf("objectmovedtohere") != -1) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     private void initViews() {
         navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -249,6 +372,7 @@ public class MainActivity extends AppCompatActivity
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         tabLayout = (TabLayout) findViewById(R.id.tl);
         iv_avatar = (ImageView) headView.findViewById(R.id.iv_avatar);
+        ll_header = (LinearLayout) headView.findViewById(R.id.ll_header);
         tv_name = (TextView) headView.findViewById(R.id.tv_name);
         tv_desc = (TextView) headView.findViewById(R.id.tv_desc);
         mToolbar.setTitle("首页");
@@ -312,6 +436,7 @@ public class MainActivity extends AppCompatActivity
             editor.putString("refererUrl", refererUrl);
             editor.commit();
         } else if (isLogin) {
+            password = sp.getString("password", null);
             name = sp.getString("name", null);
             studentName = sp.getString("studentName", null);
             cookie = sp.getString("cookie", null);
@@ -331,7 +456,7 @@ public class MainActivity extends AppCompatActivity
 
     private void initEvents() {
         //给头像注册点击事件
-        iv_avatar.setOnClickListener(new View.OnClickListener() {
+        ll_header.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isLogin) {
@@ -386,29 +511,22 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_share) {
 //            关于
-            if (alertDialog == null) {
-                alertDialog = new AlertDialog.Builder(MainActivity.this).
-                        setMessage("主题：茂职院校园信息APP\n\n" +
-                                "用途：毕业设计\n\n" +
-                                "作者：猿谋人\n\n" +
-                                "BUG反馈: 1743369777@qq.com").
-                        setPositiveButton(R.string.ok, null).
-                        create();
-            }
-            alertDialog.show();
-            alertDialog = null;
+            new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
+                    .setTitleText("茂职院校园信息APP")
+                    .setContentText("用途：毕业设计\n\n" +
+                            "作者：猿谋人\n\n" +
+                            "BUG反馈: 1743369777@qq.com\n\n" +
+                            "github：https://github.com/buqiyuan")
+                    .setCustomImage(R.drawable.about_avatar)
+                    .show();
             return true;
         } else if (id == R.id.nav_state) {
 //            说明
-            if (alertDialog == null) {
-                alertDialog = new AlertDialog.Builder(MainActivity.this)
-                        .setTitle("简要说明")
-                        .setMessage("在退出软件后,登录状态最多保持30分钟(网站cookie一般时效为30分钟),再次打开软件时需要重新输入验证码进行登录")
-                        .setPositiveButton(R.string.ok, null)
-                        .create();
-            }
-            alertDialog.show();
-            alertDialog = null;
+            new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
+                    .setTitleText("简要说明")
+                    .setContentText("登录账户为茂职院教务处学生登陆账户。")
+                    .setCustomImage(R.drawable.state)
+                    .show();
             return true;
         }
 //        如果用户名不为空，则查询相关信息

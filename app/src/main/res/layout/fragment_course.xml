@@ -24,47 +24,19 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
 
-        <!--<Spinner-->
-            <!--android:id="@+id/spinner_kb"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="right"-->
-            <!--android:dropDownSelector="@color/skyblue"-->
-            <!--android:dropDownWidth="match_parent"-->
-            <!--android:overlapAnchor="false"-->
-            <!--android:spinnerMode="dropdown">-->
-            <!--</Spinner>-->
+        <TextView
+            android:id="@+id/tv_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="筛选"
+            android:textSize="20sp"
+            android:textColor="@color/white">
+        </TextView>
+
     </android.support.v7.widget.Toolbar>
-
-    <!--<RelativeLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@color/courseHeaderBackground">-->
-
-        <!--<Spinner-->
-            <!--android:id="@+id/spinner_xn"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_toLeftOf="@+id/spinner_xq"-->
-            <!--android:dropDownSelector="@color/skyblue"-->
-            <!--android:dropDownWidth="match_parent"-->
-            <!--android:overlapAnchor="false"-->
-            <!--android:spinnerMode="dropdown">-->
-
-        <!--</Spinner>-->
-
-        <!--<Spinner-->
-            <!--android:id="@+id/spinner_xq"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:dropDownSelector="@color/skyblue"-->
-            <!--android:dropDownWidth="match_parent"-->
-            <!--android:overlapAnchor="false"-->
-            <!--android:spinnerMode="dropdown">-->
-
-        <!--</Spinner>-->
-    <!--</RelativeLayout>-->
 
     <include layout="@layout/header_course" />
 
@@ -97,7 +69,16 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-
+                    <TextView
+                        android:id="@+id/tv_error"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:layout_gravity="center"
+                        android:padding="30dp"
+                        android:textSize="16sp"
+                        android:text="暂未查询到相关课程，请检查您查询的学年或学期是否在您在校就读期间"
+                        android:visibility="gone"/>
                     <LinearLayout
                         android:id="@+id/ll_load"
                         android:layout_width="match_parent"
@@ -127,6 +108,7 @@
                         android:id="@+id/listViewRight"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:divider="@null"
                         android:listSelector="@android:color/transparent" />
                 </FrameLayout>
 

@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
-    private Toolbar mToolbar;
     private TabLayout tabLayout;
     private ViewPager mViewPager;
     private MyViewpaerAdapter myViewpaerAdapter;
@@ -50,32 +49,10 @@ public class HomeFragment extends Fragment {
     String xueshuLink;
     String xibuLink;
     String gaozhuanLink;
-    private String studentName;
-    private static String cookie;
-    private String name;
-    private String url = "http://jwc.mmvtc.cn/";
-    private static String refererUrl = "";
-    private static String infoUrl = "";
-    private static String scoreUrl = "";
-    private static String xgPswUrl = "";
-    private static String courseUrl = "";
-    private ViewPager pager;
-    private TextView tv_studentName;
-    private TextView page_title;
-    private FragmentAdapter adapter;
     //tab标题
     private List<String> titles = new ArrayList<>();
-
     //fragments
     private List<Fragment> fragments = new ArrayList<>();
-    private ImageView iv_avatar;
-    private NavigationView navigationView;
-    private View headView;
-    private boolean flag = false;
-    private AlertDialog alertDialog;
-    private Boolean isLogin = false;
-    private TextView tv_name;
-    private TextView tv_desc;
     View view;
 
     @Override
@@ -121,24 +98,15 @@ public class HomeFragment extends Fragment {
                 case 1:
                     initDatas();
                     initEvents();
-//                    new Thread(avatarRun).start();
                     break;
-//                case 2:
-//                    Bitmap bitmap = (Bitmap) msg.obj;
-//                    Bitmap avatar = toRoundCornerImage(bitmap, 0);
-//                    Log.e("avatar", avatar.toString());
-//                    iv_avatar.setImageBitmap(avatar);
-//                    break;
             }
         }
     };
 
     private void initViews() {
-//        mToolbar = (Toolbar) view.findViewById(R.id.tb);
         tabLayout = (TabLayout) view.findViewById(R.id.tl);
         mViewPager = (ViewPager) view.findViewById(R.id.vp);
         banner = (Banner) view.findViewById(R.id.banner);
-//        setSupportActionBar(mToolbar);
     }
 
     private void initDatas() {
