@@ -5,7 +5,7 @@
     android:id="@+id/activity_web_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tab.viewpager.activity.WebViewActivity">
+    tools:context="com.tab.mmvtc_news.activity.WebViewActivity">
     <android.support.v7.widget.Toolbar
         android:id="@+id/tb"
         android:layout_width="match_parent"
@@ -17,6 +17,7 @@
         app:titleTextColor="@color/white">
 
         <TextView
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -26,10 +27,35 @@
             android:textSize="20sp" />
 
     </android.support.v7.widget.Toolbar>
+
     <WebView
         android:id="@+id/webview"
         android:padding="6dp"
         android:layout_below="@+id/tb"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    <LinearLayout
+        android:id="@+id/ll_load"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="30dp" />
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="正在加载..."
+            android:textColor="@color/colorPrimary" />
+
+    </LinearLayout>
 </RelativeLayout>

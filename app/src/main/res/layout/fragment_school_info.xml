@@ -5,7 +5,7 @@
     android:id="@+id/activity_article"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tab.viewpager.activity.ArticleActive">
+    tools:context="com.tab.mmvtc_news.activity.ArticleActive">
 
     <WebView
         android:id="@+id/webview"

@@ -11,23 +11,36 @@
         <!--android:src="@drawable/more_top"-->
         <!--android:scaleType="fitXY"-->
         <!--android:adjustViewBounds="true"/>-->
-    <com.tab.viewpager.jwc.CustomVideoView
+    <com.tab.mmvtc_news.jwc.CustomVideoView
         android:id="@+id/videoview"
         android:layout_width="match_parent"
         android:layout_height="220dp" />
 
     <TextView
-        android:id="@+id/tv_grade_test"
+        android:id="@+id/tv_panorama"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:background="@android:color/white"
-        android:drawableLeft="@drawable/ic_exam"
+        android:drawableLeft="@drawable/panorama"
         android:drawablePadding="5dp"
         android:gravity="center_vertical"
         android:padding="12dp"
-        android:text="等级考试查询"
+        android:text="全景校园"
+        android:textSize="16sp" />
+    <TextView
+        android:id="@+id/tv_guide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@android:color/white"
+        android:drawableLeft="@drawable/guide"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:text="来校指南"
         android:textSize="16sp" />
     <TextView
         android:id="@+id/tv_timetable"
@@ -55,7 +68,19 @@
         android:padding="12dp"
         android:text="作者博客"
         android:textSize="16sp" />
-
+    <TextView
+        android:id="@+id/tv_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:background="@android:color/white"
+        android:drawableLeft="@drawable/update"
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:padding="12dp"
+        android:text="检查更新"
+        android:textSize="16sp" />
     <TextView
         android:id="@+id/tv_exit"
         android:layout_width="match_parent"

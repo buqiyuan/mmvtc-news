@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.tab.viewpager.jwc.CustomVideoView
+    <com.tab.mmvtc_news.jwc.CustomVideoView
         android:id="@+id/videoview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

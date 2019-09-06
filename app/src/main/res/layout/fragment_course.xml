@@ -55,7 +55,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <com.tab.viewpager.jwc.NoScrollListView
+                <com.tab.mmvtc_news.jwc.NoScrollListView
                     android:id="@+id/listViewLeft"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
@@ -104,7 +104,7 @@
 
                     </LinearLayout>
 
-                    <com.tab.viewpager.jwc.NoScrollListView
+                    <com.tab.mmvtc_news.jwc.NoScrollListView
                         android:id="@+id/listViewRight"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

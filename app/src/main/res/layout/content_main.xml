@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.tab.viewpager.activity.MainActivity">
+    tools:context="com.tab.mmvtc_news.activity.MainActivity">
 
 
     <android.support.v7.widget.Toolbar
