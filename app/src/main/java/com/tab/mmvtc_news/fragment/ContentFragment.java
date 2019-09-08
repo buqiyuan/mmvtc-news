@@ -1,10 +1,13 @@
 package com.tab.mmvtc_news.fragment;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -62,6 +65,19 @@ public class ContentFragment extends Fragment {
     public boolean isLoading = false;//表示是否正处于加载状态
     private Object initdatas;
 
+    private FloatingActionButton fab_toTop;
+    private AnimatorSet hideFabAS;
+    private AnimatorSet showFabAS;
+    private boolean FAB_VISIBLE = true;
+    private int previousFirstVisibleItem;   //记录前面第一个Item
+    private int lastScrollY;            //记录ListView中最上面的Item(View)的上一次顶部Y坐标()
+    private int scrollThreshold = 2;
+    private int getTopItemScrollY() {
+        if (mListView == null || mListView.getChildAt(0) == null) return 0;
+        View topItem = mListView.getChildAt(0);
+        return topItem.getTop();
+    }
+
     public ContentFragment() {
         // Required empty public constructor
     }
@@ -97,15 +113,27 @@ public class ContentFragment extends Fragment {
     }
 
     private void initView() {
-
         View view = getView();
         mListView = (ListView) view.findViewById(R.id.lv);
         layout = (PullRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         textView = (TextView) view.findViewById(R.id.tv);
+        fab_toTop = view.findViewById(R.id.fab_toTop);
 
         loadMoreView = getActivity().getLayoutInflater().inflate(R.layout.load_more_layout, null);
         loadMoreView.setVisibility(View.VISIBLE);
 
+
+        hideFabAS = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(),R.animator.scroll_hide_fab);
+        showFabAS = (AnimatorSet)AnimatorInflater.loadAnimator(getActivity(),R.animator.scroll_show_fab);
+        //AnimatorInflater.loadAnimator加载动画
+        hideFabAS.setTarget(fab_toTop);
+        showFabAS.setTarget(fab_toTop);
+        fab_toTop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListView.setSelection(0);
+            }
+        });
     }
 
     private void initData() {
@@ -144,6 +172,40 @@ public class ContentFragment extends Fragment {
                 total_index = totalItemCount;
                 System.out.println("last:  " + last_index);
                 System.out.println("total:  " + total_index);
+                //listview初始化的时候会回调onScroll
+                if(totalItemCount == 0) {
+                    showFabAS.start();//
+                    return;
+                }
+                //滚动过程中：ListView中最上面一个Item还是同一个Item
+                if(previousFirstVisibleItem == firstVisibleItem) {
+                    int newScrollY =  getTopItemScrollY();//获得当前最上方item Y坐标
+                    boolean isExceedThreshold = Math.abs(lastScrollY - newScrollY) > scrollThreshold;
+                    if (isExceedThreshold) {
+                        if (lastScrollY > newScrollY && FAB_VISIBLE == true) {//下滑
+                            FAB_VISIBLE = false;
+                            hideFabAS.start();//FAB执行动画
+                        } else if(lastScrollY < newScrollY && FAB_VISIBLE == false){//上滑
+                            FAB_VISIBLE = true;
+                            showFabAS.start();//FAB执行动画
+                        }
+                    }
+                    lastScrollY = newScrollY;
+                } else {
+                    if (firstVisibleItem > previousFirstVisibleItem && FAB_VISIBLE == true){
+                        //向下滑动时FAB执行动画
+                        Log.e("向下滑动","向下滑动时FAB执行动画");
+                        FAB_VISIBLE = false;
+                        hideFabAS.start();
+                    } else if(firstVisibleItem < previousFirstVisibleItem && FAB_VISIBLE == false){
+                        //向上滑动时FAB执行动画
+                        FAB_VISIBLE = true;
+                        Log.e("向上滑动","向上滑动");
+                        showFabAS.start();
+                    }
+                    lastScrollY =  getTopItemScrollY();
+                    previousFirstVisibleItem = firstVisibleItem;
+                }
             }
         });
 

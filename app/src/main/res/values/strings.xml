@@ -8,7 +8,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_upgrade">版本升级</string>
+    <string name="action_upgrade">版本号</string>
     <string name="action_about">关于APP</string>
     <string name="et_name">请输入学号</string>
     <string name="et_password">请输入密码</string>

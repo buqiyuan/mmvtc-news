@@ -531,10 +531,10 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_upgrade) {
-            ToastUtils.show("当前已是最新版本！");
+            ToastUtils.show("当前版本号:"+ UpdateUtils.getVersionName(MainActivity.this));
             return true;
         }else if (id == R.id.action_about) {
-            ToastUtils.show("茂职院校园信息APP！\n 版本号:"+ UpdateUtils.getVersionName(MainActivity.this));
+            ToastUtils.show("茂职院校园信息APP！");
             return true;
         }
 
@@ -550,7 +550,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_share) {
 //            关于
             new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
-                    .setTitleText("茂职院校园信息APP"+UpdateUtils.getVersionName(MainActivity.this))
+                    .setTitleText("茂职院校园信息APP  "+UpdateUtils.getVersionName(MainActivity.this))
                     .setContentText("用途：毕业设计\n\n" +
                             "作者：猿谋人\n\n" +
                             "BUG反馈: 1743369777@qq.com\n\n" +

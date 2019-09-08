@@ -32,4 +32,15 @@
             android:layout_height="match_parent" />
 
     </com.baoyz.widget.PullRefreshLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_toTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:clickable="true"
+        android:focusable="true"
+        android:backgroundTint="@color/snow"
+        app:srcCompat="@drawable/ic_back_top" />
 </FrameLayout>
