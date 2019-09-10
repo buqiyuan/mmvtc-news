@@ -119,9 +119,9 @@ public class MainActivity extends AppCompatActivity
     private String[] itemsName;
     private FragmentManager fragmentManager;
     private FrameLayout frameLayout;
-    private static Document doc;
     private String viewstate;
     private LinearLayout ll_header;
+    private static Document doc = null;
 
     public static Document getDocument() {
         return doc;
@@ -132,37 +132,42 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         itemsName = getResources().getStringArray(R.array.mainItemsName);
-        initViews();
-        initDatas();
-        initEvents();
+        getIndexData();
         //banner设置方法全部调用完毕时最后调用
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //需要在子线程中处理的逻辑
-                doc = null;
-                try {
-                    doc = Jsoup.connect("http://www.mmvtc.cn/templet/default/index.jsp").get();
-                    Elements imgs = doc.select("img[src^=slider]");
-                    for (Element ele : imgs) {
-                        Log.e("images", ele.attr("abs:src"));
-                        images.add(ele.attr("abs:src"));
-                    }
-                    newsLink = doc.select(".col-md-6 .news .title .pull-right a").attr("href");
-                    noticeLink = doc.select(".col-md-4 .news .title .pull-right a").attr("href");
-                    xueshuLink = "http://www.mmvtc.cn/templet/xskyw/ShowClass.jsp?id=2002";
-                    xibuLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(2) .more .pull-right a").attr("href");
-                    gaozhuanLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(3) .more .pull-right a").attr("href");
-                    Message msg = new Message();
-                    msg.what = 1;
-                    mHandler.sendMessage(msg);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 
+    private void getIndexData() {
+        OkHttpUtils
+                .get()
+                .url("http://www.mmvtc.cn/templet/default/index.jsp")
+                .addParams("xh", name)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        doc = Jsoup.parse(response);
+                        Elements imgs = doc.select("img[src^=slider]");
+                        for (Element ele : imgs) {
+                            Log.e("images", ele.attr("abs:src"));
+                            images.add(ele.attr("abs:src"));
+                        }
+                        newsLink = doc.select(".col-md-6 .news .title .pull-right a").attr("href");
+                        noticeLink = doc.select(".col-md-4 .news .title .pull-right a").attr("href");
+                        xueshuLink = "http://www.mmvtc.cn/templet/xskyw/ShowClass.jsp?id=2002";
+                        xibuLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(2) .more .pull-right a").attr("href");
+                        gaozhuanLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(3) .more .pull-right a").attr("href");
+                        initViews();
+                        initDatas();
+                        initEvents();
+                        getAvatar();
+                    }
+                });
+    }
 
     private void initTab() {
         TypedArray typedArray = getResources().obtainTypedArray(R.array.mainItemsIcon);
@@ -173,76 +178,6 @@ public class MainActivity extends AppCompatActivity
             tab_bottom.addTab(tab_bottom.newTab().setIcon(typedArray.getResourceId(i, 0)).setTag(i));
         }
         typedArray.recycle();
-    }
-
-    private final MyHandler mHandler = new MyHandler(this);
-
-    static class MyHandler extends Handler {
-
-        private final WeakReference<MainActivity> mActivity;
-
-        public MyHandler(MainActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            System.out.println(msg);
-            if (mActivity.get() == null) {
-                return;
-            }
-            MainActivity activity = mActivity.get();
-            switch (msg.what) {
-                case 1:
-                    new Thread(activity.avatarRun).start();
-                    break;
-                case 2:
-                    Bitmap bitmap = (Bitmap) msg.obj;
-                    Bitmap avatar = toRoundCornerImage(bitmap, 0);
-                    Log.e("avatar", avatar.toString());
-                    activity.iv_avatar.setImageBitmap(avatar);
-                    break;
-                case 3:
-                    activity.isLogin = false;
-                    activity.tv_name.setText("登录身份已过期，请重新登录");
-                    activity.tv_desc.setText("");
-                    Toast.makeText(activity, "登录身份已过期，请重新登录！", Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-    }
-
-
-    Runnable avatarRun = new Runnable() {
-        @Override
-        public void run() {
-            getAvatar();
-        }
-    };
-
-    /**
-     * 获取圆角位图的方法
-     *
-     * @param bitmap 需要转化成圆角的位图
-     * @param pixels 圆角的度数，数值越大，圆角越大
-     * @return 处理后的圆角位图
-     */
-    public static Bitmap toRoundCornerImage(Bitmap bitmap, int pixels) {
-        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
-        final int color = 0xff424242;
-        final Paint paint = new Paint();
-        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
-        final RectF rectF = new RectF(rect);
-        final float roundPx = pixels;
-        // 抗锯齿
-        paint.setAntiAlias(true);
-        canvas.drawARGB(0, 0, 0, 0);
-        paint.setColor(color);
-        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, rect, rect, paint);
-        return output;
     }
 
     private void getAvatar() {
@@ -314,9 +249,10 @@ public class MainActivity extends AppCompatActivity
                     public void onError(Call call, Exception e, int id) {
 //                判断登陆身份cookie是否失效
                         if (isCookieOverdue(infoUrl)) {
-                            Message msg = new Message();
-                            msg.what = 3;
-                            mHandler.sendMessage(msg);
+                            isLogin = false;
+                            tv_name.setText("登录身份已过期，请重新登录");
+                            tv_desc.setText("");
+                            ToastUtils.show("登录身份已过期，请重新登录！");
                         }
                     }
 
@@ -531,9 +467,9 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_upgrade) {
-            ToastUtils.show("当前版本号:"+ UpdateUtils.getVersionName(MainActivity.this));
+            ToastUtils.show("当前版本号:" + UpdateUtils.getVersionName(MainActivity.this));
             return true;
-        }else if (id == R.id.action_about) {
+        } else if (id == R.id.action_about) {
             ToastUtils.show("茂职院校园信息APP！");
             return true;
         }
@@ -550,7 +486,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_share) {
 //            关于
             new SweetAlertDialog(this, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
-                    .setTitleText("茂职院校园信息APP  "+UpdateUtils.getVersionName(MainActivity.this))
+                    .setTitleText("茂职院校园信息APP " + UpdateUtils.getVersionName(MainActivity.this))
                     .setContentText("用途：毕业设计\n\n" +
                             "作者：猿谋人\n\n" +
                             "BUG反馈: 1743369777@qq.com\n\n" +
@@ -708,7 +644,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHandler.removeCallbacksAndMessages(null);
         OkHttpUtils.getInstance().cancelTag(this);
     }
 }

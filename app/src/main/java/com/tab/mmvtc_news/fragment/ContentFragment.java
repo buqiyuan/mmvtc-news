@@ -49,7 +49,7 @@ public class ContentFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private static final String LINK = "link";
 
-    private String link;
+    private String link = "";
 
     private TextView textView;
     private ListView mListView;
@@ -113,7 +113,7 @@ public class ContentFragment extends Fragment {
     }
 
     private void initView() {
-        View view = getView();
+         View view = getView();
         mListView = (ListView) view.findViewById(R.id.lv);
         layout = (PullRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         textView = (TextView) view.findViewById(R.id.tv);

@@ -8,7 +8,7 @@ android {
         applicationId "com.mmvtc_news"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 3
+        versionCode 1
         versionName "1.0.3"
         multiDexEnabled = true//突破65535限制
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -38,13 +38,29 @@ android {
             shrinkResources true  // 移除无用的resource文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'  // 加载默认混淆配置文件
             signingConfig signingConfigs.relealse  // 签名
+            //apk命名
+            android.applicationVariants.all { variant ->
+                //variant.outputs.each { output ->                                    //3.0以下
+                variant.outputs.all { output ->                                       //3.0以上
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        //这里修改apk文件名
+                        def fileName = "茂职院校园信息_${defaultConfig.versionCode}" +
+                                "_${defaultConfig.versionName}.apk"
+                        //output.outputFile = new File(outputFile.parent, fileName)    //3.0以下
+                        outputFileName = fileName                                      //3.0以上
+                    }
+                }
+            }
         }
         debug {
-            minifyEnabled true // 混淆
-            zipAlignEnabled true // Zipalign优化
-//            shrinkResources true // 移除无用的resource文件
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'  // 加载默认混淆配置文件
-            signingConfig signingConfigs.debug // 签名
+            // 显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            versionNameSuffix "-debug"
+            minifyEnabled false
+            zipAlignEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.debug
         }
     }
 }

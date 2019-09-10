@@ -6,6 +6,7 @@ import android.os.Message;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,9 @@ import android.view.ViewGroup;
 
 import com.tab.mmvtc_news.R;
 import com.tab.mmvtc_news.activity.GlideImageLoader;
+import com.tab.mmvtc_news.activity.MainActivity;
 import com.tab.mmvtc_news.adapter.MyViewpaerAdapter;
+import com.tab.mmvtc_news.utils.LogUtil;
 import com.youth.banner.Banner;
 
 import org.jsoup.Jsoup;
@@ -48,47 +51,12 @@ public class HomeFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
         initViews();
+        initDatas();
+        initEvents();
         //banner设置方法全部调用完毕时最后调用
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //需要在子线程中处理的逻辑
-                Document doc = null;
-                try {
-                    doc = Jsoup.connect("http://www.mmvtc.cn/templet/default/index.jsp").get();
-                    Elements imgs = doc.select("img[src^=slider]");
-                    images.clear();
-                    for (Element ele : imgs) {
-                        Log.e("images", ele.attr("abs:src"));
-                        images.add(ele.attr("abs:src"));
-                    }
-                    newsLink = doc.select(".col-md-6 .news .title .pull-right a").attr("href");
-                    noticeLink = doc.select(".col-md-4 .news .title .pull-right a").attr("href");
-                    xueshuLink = "http://www.mmvtc.cn/templet/xskyw/ShowClass.jsp?id=2002";
-                    xibuLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(2) .more .pull-right a").attr("href");
-                    gaozhuanLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(3) .more .pull-right a").attr("href");
-                    Message msg = new Message();
-                    msg.what = 1;
-                    handler.sendMessage(msg);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
         return view;
     }
 
-
-    Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 1:
-                    initDatas();
-                    initEvents();
-                    break;
-            }
-        }
-    };
 
     private void initViews() {
         tabLayout = (TabLayout) view.findViewById(R.id.tl);
@@ -97,6 +65,22 @@ public class HomeFragment extends Fragment {
     }
 
     private void initDatas() {
+        Document doc  = MainActivity.getDocument();
+        Elements imgs = doc.select("img[src^=slider]");
+        images.clear();
+        LogUtil.e("imgs", imgs.toString());
+        for (Element ele : imgs) {
+            LogUtil.e("images22",ele.attr("abs:src") );
+            images.add(TextUtils.isEmpty(ele.attr("abs:src").trim())
+                    ? "https://www.mmvtc.cn/templet/default/" + ele.attr("src")
+                    : ele.attr("abs:src"));
+        }
+        newsLink = doc.select(".col-md-6 .news .title .pull-right a").attr("href");
+        noticeLink = doc.select(".col-md-4 .news .title .pull-right a").attr("href");
+        xueshuLink = "http://www.mmvtc.cn/templet/xskyw/ShowClass.jsp?id=2002";
+        xibuLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(2) .more .pull-right a").attr("href");
+        gaozhuanLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(3) .more .pull-right a").attr("href");
+
         if (titles.isEmpty()) {
 
             titles.add("学院新闻");
