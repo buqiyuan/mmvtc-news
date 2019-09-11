@@ -1,5 +1,6 @@
 package com.tab.mmvtc_news.adapter;
 
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;

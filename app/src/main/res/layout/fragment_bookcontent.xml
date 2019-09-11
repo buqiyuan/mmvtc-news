@@ -1,0 +1,36 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="12dp"
+    tools:context="com.tab.mmvtc_news.fragment.ContentFragment">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tl_sub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabGravity="fill"
+        app:tabIndicatorColor="@color/colorPrimary"
+        app:tabMode="scrollable"
+        app:tabSelectedTextColor="@color/colorPrimary"
+        app:tabTextAppearance="@style/TabLayoutTextStyle"
+        app:tabTextColor="@color/gray">
+
+    </android.support.design.widget.TabLayout>
+
+    <com.baoyz.widget.PullRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:refreshColor="@color/colorPrimary"
+        app:refreshType="material">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_library"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </com.baoyz.widget.PullRefreshLayout>
+
+</FrameLayout>

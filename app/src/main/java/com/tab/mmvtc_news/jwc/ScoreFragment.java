@@ -12,6 +12,7 @@ import android.widget.SimpleAdapter;
 import com.tab.mmvtc_news.R;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
+import com.tab.mmvtc_news.utils.LogUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -71,7 +72,6 @@ public class ScoreFragment extends AppCompatActivity {
             });
         }
     }
-
 
 
     private void getViewstate() {

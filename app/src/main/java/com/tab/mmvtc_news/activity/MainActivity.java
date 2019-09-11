@@ -6,18 +6,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -35,7 +29,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hjq.toast.ToastUtils;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
@@ -44,6 +37,7 @@ import com.tab.mmvtc_news.adapter.MyViewpaerAdapter;
 import com.tab.mmvtc_news.fragment.AboutSchoolFragment;
 import com.tab.mmvtc_news.fragment.DepartmentFragment;
 import com.tab.mmvtc_news.fragment.HomeFragment;
+import com.tab.mmvtc_news.fragment.LibraryFragment;
 import com.tab.mmvtc_news.jwc.ChangePasswordActivity;
 import com.tab.mmvtc_news.jwc.CourseFragment;
 import com.tab.mmvtc_news.jwc.FragmentAdapter;
@@ -54,6 +48,7 @@ import com.tab.mmvtc_news.jwc.ScoreFragment;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.callback.BitmapCallback;
 import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
+import com.tab.mmvtc_news.utils.LogUtil;
 import com.xuexiang.xupdate.utils.UpdateUtils;
 import com.youth.banner.Banner;
 
@@ -64,7 +59,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -145,7 +139,7 @@ public class MainActivity extends AppCompatActivity
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        ToastUtils.show("获取数据失败！");
                     }
 
                     @Override
@@ -189,7 +183,7 @@ public class MainActivity extends AppCompatActivity
         headers.put("Referer", infoUrl);
         headers.put("Host", "jwc.mmvtc.cn");
         headers.put("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36");
-
+        LogUtil.e("infoUrl", infoUrl);
         OkHttpUtils
                 .get()
                 .url(infoUrl)
@@ -225,7 +219,7 @@ public class MainActivity extends AppCompatActivity
 
                                     @Override
                                     public void onResponse(Bitmap bitmap, int id) {
-                                        Log.e("TAG", "onResponse：complete");
+                                        Log.e("setImageBitmap", "设置头像成功");
                                         iv_avatar.setImageBitmap(bitmap);
                                     }
                                 });
@@ -301,6 +295,7 @@ public class MainActivity extends AppCompatActivity
                         Document html = Jsoup.parse(response);
                         Elements e = html.select("input[name=__VIEWSTATE]");
                         viewstate = e.get(0).attr("value");
+                        LogUtil.e("viewstate", viewstate);
                         doLogin();
                     }
 
@@ -372,13 +367,14 @@ public class MainActivity extends AppCompatActivity
         fragments.add(new HomeFragment());
         fragments.add(new DepartmentFragment());
         fragments.add(new AboutSchoolFragment());
+        fragments.add(new LibraryFragment());
         fragments.add(new MoreFragment());
         adapter = new FragmentAdapter(getSupportFragmentManager(), fragments);
         pager = (ViewPager) findViewById(R.id.vp);
-        pager.setOffscreenPageLimit(4);
+        pager.setOffscreenPageLimit(5);
         pager.setAdapter(adapter);
         pager.setCurrentItem(0);
-        pager.setOnPageChangeListener(this);
+        pager.addOnPageChangeListener (this);
         fragmentManager = getSupportFragmentManager();
     }
 
@@ -617,6 +613,8 @@ public class MainActivity extends AppCompatActivity
         } else if (i == 2) {
             mToolbar.setTitle("学校概况");
         } else if (i == 3) {
+            mToolbar.setTitle("图书馆");
+        } else if (i == 4) {
             mToolbar.setTitle("其他");
         }
     }

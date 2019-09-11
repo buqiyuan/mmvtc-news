@@ -31,6 +31,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,7 +83,7 @@ public class ContentFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static android.support.v4.app.Fragment newInstance(String link) {
+    public static Fragment newInstance(String link) {
         ContentFragment fragment = new ContentFragment();
         Bundle args = new Bundle();
         args.putString(LINK, link);
@@ -248,26 +249,41 @@ public class ContentFragment extends Fragment {
         });
     }
 
-    Handler handler = new Handler() {
+    private final MyHandler mHandler = new MyHandler(this);
+
+    static class MyHandler extends Handler {
+
+        private final WeakReference<ContentFragment> mActivity;
+
+        public MyHandler(ContentFragment activity) {
+            mActivity = new WeakReference<>(activity);
+        }
+
         @Override
         public void handleMessage(Message msg) {
+            System.out.println(msg);
+            if (mActivity.get() == null) {
+                return;
+            }
+            ContentFragment activity = mActivity.get();
             switch (msg.what) {
                 case 1:
                     //刷新适配器
-                    mAdapter.notifyDataSetChanged();
+                    activity.mAdapter.notifyDataSetChanged();
                     //加载完成
-                    loadComplete();
+                    activity.loadComplete();
+                    activity.mListView.setEnabled(true);
                     break;
             }
         }
-    };
-
+    }
     /**
      * 上拉加载更多数据
      *
      * @param start 开始索引
      */
     public void getDatas(final int start) {
+        mListView.setEnabled(false);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -377,7 +393,7 @@ public class ContentFragment extends Fragment {
                     Log.e("datas", datas.toString());
                     Message msg = new Message();
                     msg.what = 1;
-                    handler.sendMessage(msg);
+                    mHandler.sendMessage(msg);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -392,6 +408,7 @@ public class ContentFragment extends Fragment {
     public void loadComplete() {
         loadMoreView.setVisibility(View.GONE);//设置刷新界面不可见
         isLoading = false;//设置正在刷新标志位false
+        mHandler.removeCallbacksAndMessages(null);
 //        mListView.removeFooterView(loadMoreView);//如果是最后一页的话，则将其从ListView中移出
     }
 }

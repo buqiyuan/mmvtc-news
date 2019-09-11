@@ -4,12 +4,14 @@
         <item>首页</item>
         <item>系部新闻</item>
         <item>学校概况</item>
+        <item>图书馆</item>
         <item>其他</item>
     </string-array>
     <integer-array name="mainItemsIcon">
         <item>@drawable/dynamic_home</item>
         <item>@drawable/dynamic_grade</item>
         <item>@drawable/dynamic_school</item>
+        <item>@drawable/dynamic_library</item>
         <item>@drawable/dynamic_more</item>
     </integer-array>
 </resources>

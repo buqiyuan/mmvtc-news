@@ -21,6 +21,7 @@ import com.tab.mmvtc_news.R;
 import com.tab.mmvtc_news.adapter.MyBaseAdapter;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
+import com.tab.mmvtc_news.utils.LogUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -94,7 +95,7 @@ public class CourseFragment extends AppCompatActivity {
             cookie = sp.getString("cookie", null);
             listViewRight = (NoScrollListView) findViewById(R.id.listViewRight);
             listViewLeft = (NoScrollListView) findViewById(R.id.listViewLeft);
-//            adapter = new SimpleAdapter(CourseFragment.this, courseList, R.layout.course_item, keyArr, itemArr);
+//            adapter = new MySimpleAdapter(CourseFragment.this, courseList, R.layout.course_item, keyArr, itemArr);
             adapter = new MyBaseAdapter(CourseFragment.this, courseList);
             ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(CourseFragment.this, R.layout.course_time_item, data);//适配器
 
@@ -339,7 +340,7 @@ public class CourseFragment extends AppCompatActivity {
             Message msg = new Message();
             msg.what = 1;
             mHandler.sendMessage(msg);
-            LogUtils.e("courseList", courseList.toString());
+            LogUtil.e("courseList", courseList.toString());
         }
     }
     @Override

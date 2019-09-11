@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
+
 import com.tab.mmvtc_news.R;
 
 import org.jsoup.Connection;
@@ -35,7 +36,7 @@ public class SchoolContentFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static android.support.v4.app.Fragment newInstance(String link) {
+    public static Fragment newInstance(String link) {
         SchoolContentFragment fragment = new SchoolContentFragment();
         Bundle args = new Bundle();
         args.putString(LINK, link);

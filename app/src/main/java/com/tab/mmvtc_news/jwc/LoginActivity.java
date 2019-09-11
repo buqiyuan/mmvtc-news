@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.hjq.toast.ToastUtils;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import com.tab.mmvtc_news.R;
 import com.tab.mmvtc_news.activity.MainActivity;
@@ -84,7 +85,8 @@ public class LoginActivity extends Activity implements OnClickListener {
         init();// 初始化控件
         read();// 读取保存的账号密码
         initView();
-        new Thread(vertifyRun).start();// 获取验证码
+//        new Thread(vertifyRun).start();// 获取验证码
+        getVertify();// 获取验证码
     }
 
     // 读取保存的账号密码
@@ -161,68 +163,8 @@ public class LoginActivity extends Activity implements OnClickListener {
 
         Toast.makeText(LoginActivity.this, tip, Toast.LENGTH_LONG).show();
         et_vertify.setText("");
-        new Thread(refreshRun).start();
-    }
-
-    private final MyHandler mHandler = new MyHandler(this);
-
-    static class MyHandler extends Handler {
-
-        private final WeakReference<LoginActivity> mActivity;
-
-        public MyHandler(LoginActivity activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            System.out.println(msg);
-            final LoginActivity activity = mActivity.get();
-            activity.loginDialog.dismiss();
-            if (mActivity.get() == null) {
-                return;
-            }
-            switch (msg.what) {
-                case 1:
-                    Bitmap bitmap = (Bitmap) msg.obj;
-                    activity.iv_vertify.setImageBitmap(bitmap);
-                    break;
-                case 2:
-                    activity.errorDialog.setTitleText("验证码错误").show();
-                    new Thread(activity.refreshRun).start();
-                    break;
-                case 3:
-                    activity.errorDialog.setTitleText("密码错误").show();
-                    new Thread(activity.refreshRun).start();
-                    break;
-                case 4:
-                    activity.errorDialog.setTitleText("用户名不存在或未按照要求参加教学活动").show();
-                    new Thread(activity.refreshRun).start();
-                    break;
-                case 5:
-                    activity.successDialog.setTitleText("登陆成功")
-                            .show();
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Intent intent = new Intent(activity,
-                                    MainActivity.class);
-                            intent.putExtra("isLogin", true);
-                            intent.putExtra("name", activity.name);
-                            intent.putExtra("studentName", activity.studentName);
-                            intent.putExtra("cookie", activity.cookie);
-                            intent.putExtra("viewstate", activity.viewstate);
-                            intent.putExtra("infoUrl", activity.infoUrl);
-                            intent.putExtra("xgPswUrl", activity.xgPswUrl);
-                            intent.putExtra("scoreUrl", activity.scoreUrl);
-                            intent.putExtra("courseUrl", activity.courseUrl);
-                            activity.startActivity(intent);
-                            activity.finish();
-                        }
-                    }, 1100);
-                    break;
-            }
-        }
+//        new Thread(refreshRun).start();
+        refreshVertify();
     }
 
 
@@ -244,7 +186,7 @@ public class LoginActivity extends Activity implements OnClickListener {
         loginDialog.setTitleText("登陆中,请稍后片刻...");
         loginDialog.setCancelable(true);
         loginDialog.show();
-        new Thread(loginRun).start();
+        login();
     }
 
     // 提交数据执行登陆
@@ -256,7 +198,7 @@ public class LoginActivity extends Activity implements OnClickListener {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        errorDialog.setTitleText("登录失败！").show();
                     }
 
                     @Override
@@ -278,7 +220,7 @@ public class LoginActivity extends Activity implements OnClickListener {
                                 .execute(new StringCallback() {
                                     @Override
                                     public void onError(Call call, Exception e, int id) {
-
+                                        errorDialog.setTitleText("登录失败！").show();
                                     }
 
                                     @Override
@@ -293,23 +235,45 @@ public class LoginActivity extends Activity implements OnClickListener {
 
     // 判断用户登陆结果
     private void checkLogin(String content) {
-        Message msg = new Message();
+        loginDialog.dismiss();
         if (content.indexOf("验证码不正确") != -1) {
-            msg.what = 2;
+            errorDialog.setTitleText("验证码错误").show();
+            refreshVertify();
         } else if (content.indexOf("密码错误") != -1) {
-            msg.what = 3;
+            errorDialog.setTitleText("密码错误").show();
+            refreshVertify();
         } else if (content.indexOf("用户名不存在或未按照要求参加教学活动") != -1) {
-            msg.what = 4;
+            errorDialog.setTitleText("用户名不存在或未按照要求参加教学活动").show();
+            refreshVertify();
         } else if (content.indexOf("欢迎您") != -1) {
-            msg.what = 5;
+            successDialog.setTitleText("登陆成功")
+                    .show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = new Intent(LoginActivity.this,
+                            MainActivity.class);
+                    intent.putExtra("isLogin", true);
+                    intent.putExtra("name", name);
+                    intent.putExtra("studentName", studentName);
+                    intent.putExtra("cookie", cookie);
+                    intent.putExtra("viewstate", viewstate);
+                    intent.putExtra("infoUrl", infoUrl);
+                    intent.putExtra("xgPswUrl", xgPswUrl);
+                    intent.putExtra("scoreUrl", scoreUrl);
+                    intent.putExtra("courseUrl", courseUrl);
+                    startActivity(intent);
+                    finish();
+                }
+            }, 1100);
             Document html = Jsoup.parse(content);
-            Elements top = html.select("#headDiv .nav > li");
+            Elements top = html.select("#headDiv .nav > li.top");
             studentName = html.select("span#xhxm").text();
             studentName = studentName.substring(0, studentName.length() - 2);
-            String info = top.get(3).select(".sub > li:first-child a").attr("href");
-            String course = top.get(4).select(".sub > li:first-child a").attr("href");
-            String xgPsw = top.get(3).select(".sub > li:nth-child(2) a").attr("href");
-            String cj = top.get(4).select(".sub > li:nth-child(4) a").attr("href");
+            String info = top.get(2).select(".sub > li:first-child a").attr("href");
+            String course = top.get(3).select(".sub > li:first-child a").attr("href");
+            String xgPsw = top.get(2).select(".sub > li:nth-child(2) a").attr("href");
+            String cj = top.get(3).select(".sub > li:nth-child(4) a").attr("href");
             String encodeName = null;
             try {
                 encodeName = URLEncoder.encode(studentName, "gb2312");
@@ -320,12 +284,14 @@ public class LoginActivity extends Activity implements OnClickListener {
             xgPswUrl = xgPsw.replaceAll(studentName, encodeName);
             scoreUrl = cj.replaceAll(studentName, encodeName);
             courseUrl = course.replaceAll(studentName, encodeName);
+            Log.e("infoUrl", infoUrl);
+            Log.e("xgPswUrl", xgPswUrl);
+            Log.e("scoreUrl", scoreUrl);
             Log.e("courseUrl", courseUrl);
             if (cb_isSave.isChecked()) {
                 save(name, password);
             }
         }
-        mHandler.sendMessage(msg);
     }
 
 
@@ -339,6 +305,7 @@ public class LoginActivity extends Activity implements OnClickListener {
                 .execute(new BitmapCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        ToastUtils.show("获取验证码失败！");
                     }
 
                     @Override
@@ -353,28 +320,6 @@ public class LoginActivity extends Activity implements OnClickListener {
         getVertify();
     }
 
-    Runnable vertifyRun = new Runnable() {
-
-        @Override
-        public void run() {
-            getVertify();
-        }
-    };
-    Runnable refreshRun = new Runnable() {
-
-        @Override
-        public void run() {
-            refreshVertify();
-        }
-    };
-    Runnable loginRun = new Runnable() {
-
-        @Override
-        public void run() {
-            login();
-        }
-    };
-
     // 点击事件
     @Override
     public void onClick(View v) {
@@ -385,7 +330,7 @@ public class LoginActivity extends Activity implements OnClickListener {
                 break;
 
             case R.id.iv_vertify:
-                new Thread(refreshRun).start();
+                refreshVertify();
                 break;
         }
     }
@@ -393,7 +338,6 @@ public class LoginActivity extends Activity implements OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mHandler.removeCallbacksAndMessages(null);
         OkHttpUtils.getInstance().cancelTag(this);
     }
 }
