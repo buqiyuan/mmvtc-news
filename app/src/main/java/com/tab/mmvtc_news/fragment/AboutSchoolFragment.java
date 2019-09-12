@@ -173,7 +173,7 @@ public class AboutSchoolFragment extends Fragment {
             }
         });
         myViewpaerAdapter = new MyViewpaerAdapter(getChildFragmentManager(), titles, fragments);
-
+        mViewPager.setOffscreenPageLimit(5);
         mViewPager.setAdapter(myViewpaerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
     }

@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -27,9 +26,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.MultiTransformation;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.hjq.toast.ToastUtils;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import com.tab.mmvtc_news.R;
@@ -64,6 +67,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jp.wasabeef.glide.transformations.BlurTransformation;
+import jp.wasabeef.glide.transformations.CropTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import okhttp3.Call;
 
 //import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -102,6 +108,7 @@ public class MainActivity extends AppCompatActivity
     //fragments
     private List<Fragment> fragments = new ArrayList<>();
     private ImageView iv_avatar;
+    private ImageView iv_back;
     private NavigationView navigationView;
     private View headView;
     private boolean flag = false;
@@ -114,8 +121,9 @@ public class MainActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private FrameLayout frameLayout;
     private String viewstate;
-    private LinearLayout ll_header;
+    private RelativeLayout ll_header;
     private static Document doc = null;
+    private ImageView user_line;
 
     public static Document getDocument() {
         return doc;
@@ -134,7 +142,6 @@ public class MainActivity extends AppCompatActivity
         OkHttpUtils
                 .get()
                 .url("http://www.mmvtc.cn/templet/default/index.jsp")
-                .addParams("xh", name)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -161,6 +168,114 @@ public class MainActivity extends AppCompatActivity
                         getAvatar();
                     }
                 });
+    }
+
+    private void initViews() {
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        headView = navigationView.inflateHeaderView(R.layout.nav_header_main);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        tabLayout = (TabLayout) findViewById(R.id.tl);
+        iv_avatar = (ImageView) headView.findViewById(R.id.iv_avatar);
+        iv_back = (ImageView) headView.findViewById(R.id.iv_back);
+        user_line = (ImageView) headView.findViewById(R.id.user_line);
+        ll_header = headView.findViewById(R.id.ll_header);
+        tv_name = (TextView) headView.findViewById(R.id.tv_name);
+        tv_desc = (TextView) headView.findViewById(R.id.tv_desc);
+        mToolbar.setTitle("首页");
+
+        setSupportActionBar(mToolbar);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//左侧抽屉
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+//        setSupportActionBar(mToolbar);
+
+        tab_bottom = (TabLayout) findViewById(R.id.tl_bottom);
+        if (tab_bottom.getTabCount() > 0) {
+            tab_bottom.getTabAt(0).select();
+            switchTabSelect(0);
+        }
+        initTab();
+        tab_bottom.addOnTabSelectedListener(this);
+
+        List<Fragment> fragments = new ArrayList<Fragment>();
+        fragments.add(new HomeFragment());
+        fragments.add(new DepartmentFragment());
+        fragments.add(new AboutSchoolFragment());
+        fragments.add(new LibraryFragment());
+        fragments.add(new MoreFragment());
+        adapter = new FragmentAdapter(getSupportFragmentManager(), fragments);
+        pager = (ViewPager) findViewById(R.id.vp);
+        pager.setOffscreenPageLimit(5);
+        pager.setAdapter(adapter);
+        pager.setCurrentItem(0);
+        pager.addOnPageChangeListener(this);
+        fragmentManager = getSupportFragmentManager();
+    }
+
+    private void initDatas() {
+        Intent intent = getIntent();
+        SharedPreferences sp = getSharedPreferences("user", MODE_PRIVATE);
+        isLogin = sp.contains("password");
+//        判断用户是否是登录状态，根据密码判断
+        if (intent.getBooleanExtra("isLogin", false)) {
+            name = intent.getStringExtra("name");
+            studentName = intent.getStringExtra("studentName");
+            cookie = intent.getStringExtra("cookie");
+            infoUrl = url + intent.getStringExtra("infoUrl");
+            xgPswUrl = url + intent.getStringExtra("xgPswUrl");
+            scoreUrl = url + intent.getStringExtra("scoreUrl");
+            courseUrl = url + intent.getStringExtra("courseUrl");
+            refererUrl = "http://jwc.mmvtc.cn/xs_main.aspx?xh=" + name;
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("studentName", studentName);
+            editor.putString("cookie", cookie);
+            editor.putString("infoUrl", infoUrl);
+            editor.putString("scoreUrl", scoreUrl);
+            editor.putString("courseUrl", courseUrl);
+            editor.putString("xgPswUrl", xgPswUrl);
+            editor.putString("refererUrl", refererUrl);
+            editor.commit();
+        } else if (isLogin) {
+            password = sp.getString("password", null);
+            name = sp.getString("name", null);
+            studentName = sp.getString("studentName", null);
+            cookie = sp.getString("cookie", null);
+            infoUrl = sp.getString("infoUrl", null);
+            xgPswUrl = sp.getString("xgPswUrl", null);
+            scoreUrl = sp.getString("scoreUrl", null);
+            courseUrl = sp.getString("courseUrl", null);
+        }
+//        设置用户名
+        if (isLogin) {
+            if (sp.contains("studentName") && sp.getString("studentName", null) != "") {
+                tv_name.setText(sp.getString("studentName", null));
+                tv_desc.setText("这人很懒，什么也没留下。");
+            }
+        }
+    }
+
+    private void initEvents() {
+        //给头像注册点击事件
+        ll_header.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isLogin) {
+                    return;
+                }
+                Bundle bundle = new Bundle();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+//        myViewpaerAdapter = new MyViewpaerAdapter(getSupportFragmentManager(), titles, fragments);
     }
 
     private void initTab() {
@@ -200,8 +315,15 @@ public class MainActivity extends AppCompatActivity
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Document dom = Jsoup.parse(response);
-                        String avatarUrl = url + dom.select("#xszp").attr("src");
+                        Document doc = Jsoup.parse(response);
+                        String phoneNumber = doc.select("#TELNUMBER").attr("value");
+                        if (!TextUtils.isEmpty(phoneNumber)){
+                            user_line.setVisibility(View.VISIBLE);
+                            tv_desc.setText(phoneNumber);
+                        }else {
+                            user_line.setVisibility(View.INVISIBLE);
+                        }
+                        String avatarUrl = url + doc.select("#xszp").attr("src");
                         OkHttpUtils
                                 .get()//
                                 .url(avatarUrl)//
@@ -220,7 +342,27 @@ public class MainActivity extends AppCompatActivity
                                     @Override
                                     public void onResponse(Bitmap bitmap, int id) {
                                         Log.e("setImageBitmap", "设置头像成功");
-                                        iv_avatar.setImageBitmap(bitmap);
+                                        MultiTransformation multi = new MultiTransformation<Bitmap>(new CropTransformation(600, 600, CropTransformation.CropType.TOP), new
+                                                RoundedCornersTransformation(600, 0, RoundedCornersTransformation.CornerType.ALL));
+                                        //设置圆形图像
+                                        Glide.with(MainActivity.this)
+                                                .load(bitmap)
+                                                .apply(RequestOptions.bitmapTransform(multi))
+                                                .into(iv_avatar);
+
+
+                                        MultiTransformation multi2 = new MultiTransformation<Bitmap>(new BlurTransformation(25), new CenterCrop());
+                                        //设置背景磨砂效果
+                                        Glide.with(MainActivity.this)
+                                                .load(bitmap)
+                                                .apply(RequestOptions.bitmapTransform(multi2))
+                                                .into(iv_back);
+                                        //设置圆形图像
+//                                        Glide.with(MainActivity.this)
+//                                                .load(bitmap)
+//                                                .circleCrop()
+//                                                .into(iv_avatar);
+//                                        iv_avatar.setImageBitmap(bitmap);
                                     }
                                 });
                     }
@@ -331,112 +473,6 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
-    private void initViews() {
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        headView = navigationView.inflateHeaderView(R.layout.nav_header_main);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        tabLayout = (TabLayout) findViewById(R.id.tl);
-        iv_avatar = (ImageView) headView.findViewById(R.id.iv_avatar);
-        ll_header = (LinearLayout) headView.findViewById(R.id.ll_header);
-        tv_name = (TextView) headView.findViewById(R.id.tv_name);
-        tv_desc = (TextView) headView.findViewById(R.id.tv_desc);
-        mToolbar.setTitle("首页");
-
-        setSupportActionBar(mToolbar);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//左侧抽屉
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-//        setSupportActionBar(mToolbar);
-
-        tab_bottom = (TabLayout) findViewById(R.id.tl_bottom);
-        if (tab_bottom.getTabCount() > 0) {
-            tab_bottom.getTabAt(0).select();
-            switchTabSelect(0);
-        }
-        initTab();
-        tab_bottom.addOnTabSelectedListener(this);
-
-        List<Fragment> fragments = new ArrayList<Fragment>();
-        fragments.add(new HomeFragment());
-        fragments.add(new DepartmentFragment());
-        fragments.add(new AboutSchoolFragment());
-        fragments.add(new LibraryFragment());
-        fragments.add(new MoreFragment());
-        adapter = new FragmentAdapter(getSupportFragmentManager(), fragments);
-        pager = (ViewPager) findViewById(R.id.vp);
-        pager.setOffscreenPageLimit(5);
-        pager.setAdapter(adapter);
-        pager.setCurrentItem(0);
-        pager.addOnPageChangeListener (this);
-        fragmentManager = getSupportFragmentManager();
-    }
-
-    private void initDatas() {
-        Intent intent = getIntent();
-        SharedPreferences sp = getSharedPreferences("user", MODE_PRIVATE);
-        isLogin = sp.contains("password");
-//        判断用户是否是登录状态，根据密码判断
-        if (intent.getBooleanExtra("isLogin", false)) {
-            name = intent.getStringExtra("name");
-            studentName = intent.getStringExtra("studentName");
-            cookie = intent.getStringExtra("cookie");
-            infoUrl = url + intent.getStringExtra("infoUrl");
-            xgPswUrl = url + intent.getStringExtra("xgPswUrl");
-            scoreUrl = url + intent.getStringExtra("scoreUrl");
-            courseUrl = url + intent.getStringExtra("courseUrl");
-            refererUrl = "http://jwc.mmvtc.cn/xs_main.aspx?xh=" + name;
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString("studentName", studentName);
-            editor.putString("cookie", cookie);
-            editor.putString("infoUrl", infoUrl);
-            editor.putString("scoreUrl", scoreUrl);
-            editor.putString("courseUrl", courseUrl);
-            editor.putString("xgPswUrl", xgPswUrl);
-            editor.putString("refererUrl", refererUrl);
-            editor.commit();
-        } else if (isLogin) {
-            password = sp.getString("password", null);
-            name = sp.getString("name", null);
-            studentName = sp.getString("studentName", null);
-            cookie = sp.getString("cookie", null);
-            infoUrl = sp.getString("infoUrl", null);
-            xgPswUrl = sp.getString("xgPswUrl", null);
-            scoreUrl = sp.getString("scoreUrl", null);
-            courseUrl = sp.getString("courseUrl", null);
-        }
-//        设置用户名
-        if (isLogin) {
-            if (sp.contains("studentName") && sp.getString("studentName", null) != "") {
-                tv_name.setText(sp.getString("studentName", null));
-                tv_desc.setText("这人很懒，什么也没留下。");
-            }
-        }
-    }
-
-    private void initEvents() {
-        //给头像注册点击事件
-        ll_header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isLogin) {
-                    return;
-                }
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
-//        myViewpaerAdapter = new MyViewpaerAdapter(getSupportFragmentManager(), titles, fragments);
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -533,6 +569,7 @@ public class MainActivity extends AppCompatActivity
                                     SharedPreferences.Editor editor = sp.edit();
                                     editor.remove("password");
                                     editor.commit();
+                                    user_line.setVisibility(View.INVISIBLE);
                                     ToastUtils.show("你已退出登录！");
                                 }
                             })

@@ -1,13 +1,16 @@
 package com.tab.mmvtc_news.fragment;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,13 +27,14 @@ import com.tab.mmvtc_news.jsonBean.Content;
 import com.tab.mmvtc_news.jsonBean.JsonRootBean;
 import com.tab.mmvtc_news.jwc.BaseFragment;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
+import com.tab.mmvtc_news.okhttpUtil.callback.BitmapCallback;
 import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
 import com.tab.mmvtc_news.utils.LogUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 import okhttp3.Call;
@@ -38,7 +42,6 @@ import okhttp3.MediaType;
 
 public class SearchBookFragment extends BaseFragment {
 
-    private TextView btnSearch;
     private EditText etLibrary;
     private RecyclerView rvLibrary;
     private MySimpleAdapter<Content> mAdapter;
@@ -57,10 +60,14 @@ public class SearchBookFragment extends BaseFragment {
     }
 
     @Override
-    protected void initView(View view) {
-        btnSearch = (TextView) view.findViewById(R.id.btn_search);
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+    @Override
+    protected void initView(View view ) {
+        TextView btnSearch = (TextView) view.findViewById(R.id.btn_search);
         etLibrary = (EditText) view.findViewById(R.id.et_library);
-        rvLibrary = (RecyclerView) view.findViewById(R.id.rv_library);
+        rvLibrary = (RecyclerView) view.findViewById(R.id.rv_search_library);
         layout = (PullRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +76,7 @@ public class SearchBookFragment extends BaseFragment {
                 doSearch();
             }
         });
+        searchBook("鲁迅");
     }
 
     //    执行搜索
@@ -81,29 +89,31 @@ public class SearchBookFragment extends BaseFragment {
         }
     }
 
-    @Override
     protected void initData() {
+        mAdapter = null;
         rvLibrary.setLayoutManager(new LinearLayoutManager(getActivity()));
         //设置适配器
         mAdapter = new MySimpleAdapter<Content>(getActivity(), R.layout.item_search_book, content) {
             @Override
-            public void onBindView(final MySimpleHolder holder, final int position) {
+            public void onBindView(MySimpleHolder holder, int position) {
+                Content list = mDatas.get(position);
                 final ImageView iv_book = holder.getView(R.id.iv_book);
-                final TextView book_total = holder.getView(R.id.book_total);
-                final TextView book_remain_total = holder.getView(R.id.book_remain_total);
+                final TextView book_total = holder.getView(R.id.tv_book_total);
+                final TextView book_remain_total = holder.getView(R.id.tv_book_remain_total);
+
+                getMarcNo(position, iv_book, book_total, book_remain_total);
 
                 TextView book_name = holder.getView(R.id.tv_book_name);
-//                book_name.setText(mDatas.get(position).getTitle());
-                book_name.setText("fhkafhkah");
+                book_name.setText(list.getTitle());
 
                 TextView tv_book_publisher = holder.getView(R.id.tv_book_publisher);
-                tv_book_publisher.setText(mDatas.get(position).getPublisher());
+                tv_book_publisher.setText(list.getPublisher());
+
 
                 TextView tv_author = holder.getView(R.id.tv_book_author);
-                tv_author.setText(mDatas.get(position).getAuthor());
+                tv_author.setText(list.getAuthor());
             }
         };
-        rvLibrary.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvLibrary.setAdapter(mAdapter);
         //设置mRecyclerview的item单击事件
         mAdapter.setOnItemClickListener(new MySimpleAdapter.OnItemClickListener() {
@@ -126,7 +136,9 @@ public class SearchBookFragment extends BaseFragment {
                     @Override
                     public void run() {
                         //刷新，先清除数据
-                        content.clear();
+                        if (content != null) {
+                            content.clear();
+                        }
                         //再重新请求数据，通常是请求网络，获取最新数据
                         doSearch();
                         //刷新适配器
@@ -140,84 +152,61 @@ public class SearchBookFragment extends BaseFragment {
         });
     }
 
-    private final SearchBookFragment.MyHandler mHandler = new SearchBookFragment.MyHandler(this);
 
-    static class MyHandler extends Handler {
+    //设置图书封面和馆藏
+    private void getMarcNo(int position, final ImageView iv_book, final TextView book_total, final TextView book_remain_total) {
+        OkHttpUtils
+                .get()//
+                .url("http://hwlibsys.mmvtc.cn:8080/opac/ajax_isbn_marc_no.php")//
+                .addParams("marc_no", content.get(position).getMarcRecNo())
+                .addParams("isbn", content.get(position).getIsbn())
+                .tag(this)//
+                .build()//
+                .connTimeOut(20000)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        LogUtil.e("getImgErr","获取图书封面失败！");
+                    }
 
-        private final WeakReference<SearchBookFragment> mActivity;
+                    @Override
+                    public void onResponse(String response, int id) {
+                        JSONObject jsonObject = null;
+                        try {
+                            jsonObject = new JSONObject(response);
+                            String imageUrl = jsonObject.getString("image");
+                            String lendAvl = jsonObject.getString("lendAvl");
+                            String[] temp = null;
+                            temp = lendAvl.split("<br>");
 
-        public MyHandler(SearchBookFragment activity) {
-            mActivity = new WeakReference<>(activity);
-        }
+                            book_total.setText(Jsoup.parse(temp[0]).text());
+                            book_remain_total.setText(Jsoup.parse(temp[1]).text());
+                            if (!TextUtils.isEmpty(imageUrl.trim())) {
+                                OkHttpUtils
+                                        .get()
+                                        .url(imageUrl)
+                                        .build()
+                                        .execute(new BitmapCallback() {
+                                            @Override
+                                            public void onError(Call call, Exception e, int id) {
+                                                ToastUtils.show("获取图书封面失败！");
+                                            }
 
-        @Override
-        public void handleMessage(Message msg) {
-            System.out.println(msg);
-            if (mActivity.get() == null) {
-                return;
-            }
-            SearchBookFragment activity = mActivity.get();
-            switch (msg.what) {
-                case 1:
-                    //刷新适配器
-                    activity.mAdapter.notifyDataSetChanged();
-                    //加载完成
-                    activity.loadComplete();
-                    activity.rvLibrary.setEnabled(true);
-                    break;
-            }
-        }
+                                            @Override
+                                            public void onResponse(Bitmap bitmap, int id) {
+                                                iv_book.setImageBitmap(bitmap);
+                                            }
+                                        });
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
-    //private void getMarcNo(){
-//    OkHttpUtils
-//            .get()//
-//            .url("http://hwlibsys.mmvtc.cn:8080/opac/ajax_isbn_marc_no.php")//
-//            .addParams("marc_no", content.get(position).getMarcRecNo())
-//            .addParams("isbn", content.get(position).getIsbn())
-//            .tag(this)//
-//            .build()//
-//            .connTimeOut(20000)
-//            .execute(new StringCallback() {
-//                @Override
-//                public void onError(Call call, Exception e, int id) {
-//                    ToastUtils.show("获取图书封面失败！");
-//                }
-//
-//                @Override
-//                public void onResponse(String response, int id) {
-//                    JSONObject jsonObject = null;
-//                    try {
-//                        jsonObject = new JSONObject(response);
-//                        String imageUrl = jsonObject.getString("image");
-//                        String lendAvl = jsonObject.getString("lendAvl");
-//                        String[] temp = null;
-//                        temp = lendAvl.split("<br>");
-//
-//                        book_total.setText(temp[0]);
-//                        book_remain_total.setText(temp[1]);
-//                        OkHttpUtils
-//                                .get()
-//                                .url(imageUrl)
-//                                .build()
-//                                .execute(new BitmapCallback() {
-//                                    @Override
-//                                    public void onError(Call call, Exception e, int id) {
-//                                        ToastUtils.show("获取图书封面失败！");
-//                                    }
-//
-//                                    @Override
-//                                    public void onResponse(Bitmap bitmap, int id) {
-//                                        iv_book.setImageBitmap(bitmap);
-//                                    }
-//                                });
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//}
-    private void searchBook(String keyword) {
+    private void searchBook(final String keyword) {
+        rvLibrary.setEnabled(false);
         String jsonText = "{'searchWords':[{'fieldList':[{'fieldCode':'','fieldValue':'" + keyword + "'}]}],'filters':[],'limiter':[],'sortField':'relevance','sortType':'desc','pageSize':50,'pageCount':1,'locale':'zh_CN','first':true}";
         JSONObject jsonObject = null;
         try {
@@ -244,20 +233,20 @@ public class SearchBookFragment extends BaseFragment {
                             Gson gson = new Gson();
                             //GSON直接解析成对象
                             JsonRootBean result = gson.fromJson(response, JsonRootBean.class);
-                            //对象中拿到集合
-                            content = result.getContent();
-                            //刷新适配器
-                            mAdapter.notifyDataSetChanged();
-                            //加载完成
-                            loadComplete();
-                            rvLibrary.setEnabled(true);
-                            LogUtil.e("requestBody", gson.toJson(content));
-                            Toast.makeText(getActivity(),gson.toJson(content),Toast.LENGTH_LONG).show();
-//                            Message msg = new Message();
-//                            msg.what = 1;
-//                            mHandler.sendMessage(msg);
-//                            List<SearchResult> bookList = gson.fromJson(response, new TypeToken<List<SearchResult>>(){}.getType());
-//                            BookModel bookModel = gson.fromJson(response, BookModel.class);
+                            if (result.getTotal() > 0) {
+                                //对象中拿到集合
+                                content = result.getContent();
+                                LogUtil.e("requestBody", gson.toJson(content));
+                                LogUtil.e("response", response);
+//                            Toast.makeText(getActivity(), gson.toJson(content), Toast.LENGTH_LONG).show();
+//                            初始化搜索结果
+                                initData();
+                                rvLibrary.setEnabled(true);
+                            } else {
+                                if (content != null) content.clear();
+                                initData();
+                                ToastUtils.show("没有检索到\"" + keyword + "\"相关的图书！");
+                            }
                         }
                     });
         } else {
@@ -270,7 +259,6 @@ public class SearchBookFragment extends BaseFragment {
      */
     public void loadComplete() {
         isLoading = false;//设置正在刷新标志位false
-        mHandler.removeCallbacksAndMessages(null);
 //        rvLibrary.removeFooterView(loadMoreView);//如果是最后一页的话，则将其从ListView中移出
     }
 }

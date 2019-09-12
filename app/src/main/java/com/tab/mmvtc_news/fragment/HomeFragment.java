@@ -105,7 +105,7 @@ public class HomeFragment extends Fragment {
                 .start();
 
         myViewpaerAdapter = new MyViewpaerAdapter(getChildFragmentManager(), titles, fragments);
-
+        mViewPager.setOffscreenPageLimit(6);
         mViewPager.setAdapter(myViewpaerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
     }

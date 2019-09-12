@@ -89,24 +89,24 @@ public class LibraryFragment extends Fragment {
             titles.add("热门借阅");
             titles.add("热门收藏");
             titles.add("热门图书");
-            titles.add("我的图书");
+//            titles.add("我的图书");
 
             Fragment fragment1 = new SearchBookFragment();
             Fragment fragment2 = BookContentFragment.newInstance(top_lendLink);
             Fragment fragment3 = BookContentFragment.newInstance(top_shelfLink);
             Fragment fragment4 = BookContentFragment.newInstance(top_bookLink);
-            Fragment fragment5 = new MyLibraryFragment();
+//            Fragment fragment5 = new MyLibraryFragment();
             fragments.add(fragment1);
             fragments.add(fragment2);
             fragments.add(fragment3);
             fragments.add(fragment4);
-            fragments.add(fragment5);
+//            fragments.add(fragment5);
         }
     }
 
     private void initEvents() {
         myViewpaerAdapter = new MyViewpaerAdapter(getChildFragmentManager(), titles, fragments);
-
+        mViewPager.setOffscreenPageLimit(5);
         mViewPager.setAdapter(myViewpaerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
     }

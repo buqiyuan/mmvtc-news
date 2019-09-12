@@ -1,6 +1,7 @@
 package com.tab.mmvtc_news.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,16 +12,17 @@ import java.util.List;
 
 public abstract class MySimpleAdapter<T> extends RecyclerView.Adapter<MySimpleHolder> {
 
-    protected Context mContext;
-    protected int mLayout;
+    private Context mContext;
+    private int mLayout;
     protected List<T> mDatas;
 
-    public MySimpleAdapter(Context mContext, int mLayout, List<T> mDatas) {
+    protected MySimpleAdapter(Context mContext, int mLayout, List<T> mDatas) {
         this.mContext = mContext;
         this.mLayout = mLayout;
         this.mDatas = mDatas;
     }
 
+    @NonNull
     @Override
     public MySimpleHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(mLayout, parent, false);

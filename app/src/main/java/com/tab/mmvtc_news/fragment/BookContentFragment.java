@@ -1,31 +1,22 @@
 package com.tab.mmvtc_news.fragment;
 
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorSet;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.support.v7.widget.RecyclerView;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.tab.mmvtc_news.R;
-import com.tab.mmvtc_news.activity.ArticleActive;
 import com.tab.mmvtc_news.activity.BookDetailActivity;
 import com.tab.mmvtc_news.adapter.MySimpleAdapter;
 import com.tab.mmvtc_news.adapter.MySimpleHolder;
@@ -33,15 +24,12 @@ import com.tab.mmvtc_news.model.BookModel;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -126,7 +114,7 @@ public class BookContentFragment extends Fragment {
                 tv_author.setText(mDatas.get(position).getAuthor());
             }
         };
-        rvLibrary.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        rvLibrary.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvLibrary.setAdapter(mAdapter);
         //设置mRecyclerview的item单击事件
         mAdapter.setOnItemClickListener(new MySimpleAdapter.OnItemClickListener() {

@@ -112,7 +112,7 @@ public class DepartmentFragment extends Fragment {
 
     private void initEvents() {
         myViewpaerAdapter = new MyViewpaerAdapter(getChildFragmentManager(), titles, fragments);
-
+        mViewPager.setOffscreenPageLimit(6);
         mViewPager.setAdapter(myViewpaerAdapter);
         tabLayout.setupWithViewPager(mViewPager);
     }

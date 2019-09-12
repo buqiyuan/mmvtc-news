@@ -3,14 +3,16 @@ apply plugin: 'com.android.application'
 android {
 //    useLibrary 'org.apache.http.legacy'
     compileSdkVersion 27
-//    buildToolsVersion "28.0.3"
+    buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "com.mmvtc_news"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0.2"
+        versionCode 6
+        versionName "1.0.6"
         multiDexEnabled = true//突破65535限制
+        renderscriptTargetApi 27 as int
+        renderscriptSupportModeEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -30,7 +32,7 @@ android {
     buildTypes {
         lintOptions {
 //            checkReleaseBuilds false
-            abortOnError false
+//            abortOnError false
         }
         release {
             minifyEnabled true // 混淆
@@ -58,9 +60,10 @@ android {
             // 显示Log
             buildConfigField "boolean", "LOG_DEBUG", "true"
             versionNameSuffix "-debug"
-            minifyEnabled false
-            zipAlignEnabled false
-            shrinkResources false
+            minifyEnabled false // 混淆
+            zipAlignEnabled true // Zipalign优化
+            shrinkResources false  // 移除无用的resource文件
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
         }
     }
@@ -88,6 +91,8 @@ dependencies {
         force = true
     }
     implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'jp.wasabeef:glide-transformations:4.1.0'
+    implementation 'jp.co.cyberagent.android:gpuimage:2.0.4'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation("com.github.bumptech.glide:okhttp3-integration:4.9.0")
 
