@@ -17,8 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tab.mmvtc_news.R;
-import com.tab.mmvtc_news.activity.GlideImageLoader;
-import com.tab.mmvtc_news.adapter.MyViewpaerAdapter;
+import com.tab.mmvtc_news.utils.GlideImageLoader;
+import com.tab.mmvtc_news.adapter.MyViewpageAdapter;
 import com.tab.mmvtc_news.jwc.FragmentAdapter;
 import com.youth.banner.Banner;
 import com.youth.banner.Transformer;
@@ -38,7 +38,7 @@ public class AboutSchoolFragment extends Fragment {
     private Toolbar mToolbar;
     private TabLayout tabLayout;
     private ViewPager mViewPager;
-    private MyViewpaerAdapter myViewpaerAdapter;
+    private MyViewpageAdapter myViewpageAdapter;
     List<String> images = new ArrayList<>();
     List<String> links = new ArrayList<>();
     private Banner banner;
@@ -50,7 +50,7 @@ public class AboutSchoolFragment extends Fragment {
     private String studentName;
     private static String cookie;
     private String name;
-    private String url = "http://jwc.mmvtc.cn/";
+    private String url = "https://jwc.mmvtc.cn/";
     private static String refererUrl = "";
     private static String infoUrl = "";
     private static String scoreUrl = "";
@@ -88,7 +88,7 @@ public class AboutSchoolFragment extends Fragment {
                 //需要在子线程中处理的逻辑
                 Document doc = null;
                 try {
-                    doc = Jsoup.connect("http://www.mmvtc.cn/templet/default/aboutme.html").get();
+                    doc = Jsoup.connect("https://www.mmvtc.cn/templet/default/aboutme.html").get();
                     Elements li = doc.select(".container .subChannelList li");
                     for (Element ele : li) {
                         titles.add(ele.select("figcaption").text());
@@ -172,9 +172,9 @@ public class AboutSchoolFragment extends Fragment {
             public void onPageScrollStateChanged(int arg0) {
             }
         });
-        myViewpaerAdapter = new MyViewpaerAdapter(getChildFragmentManager(), titles, fragments);
+        myViewpageAdapter = new MyViewpageAdapter(getChildFragmentManager(), titles, fragments);
         mViewPager.setOffscreenPageLimit(5);
-        mViewPager.setAdapter(myViewpaerAdapter);
+        mViewPager.setAdapter(myViewpageAdapter);
         tabLayout.setupWithViewPager(mViewPager);
     }
 }

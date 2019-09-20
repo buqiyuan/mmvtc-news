@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tab.mmvtc_news.R;
-import com.tab.mmvtc_news.adapter.MyViewpaerAdapter;
+import com.tab.mmvtc_news.adapter.MyViewpageAdapter;
 import com.tab.mmvtc_news.jwc.FragmentAdapter;
 import com.youth.banner.Banner;
 
@@ -25,7 +25,7 @@ public class DepartmentFragment extends Fragment {
     private Toolbar mToolbar;
     private TabLayout tabLayout;
     private ViewPager mViewPager;
-    private MyViewpaerAdapter myViewpaerAdapter;
+    private MyViewpageAdapter myViewpageAdapter;
     List<String> images = new ArrayList<>();
     private Banner banner;
     String tmgcxLink;
@@ -111,9 +111,9 @@ public class DepartmentFragment extends Fragment {
     }
 
     private void initEvents() {
-        myViewpaerAdapter = new MyViewpaerAdapter(getChildFragmentManager(), titles, fragments);
+        myViewpageAdapter = new MyViewpageAdapter(getChildFragmentManager(), titles, fragments);
         mViewPager.setOffscreenPageLimit(6);
-        mViewPager.setAdapter(myViewpaerAdapter);
+        mViewPager.setAdapter(myViewpageAdapter);
         tabLayout.setupWithViewPager(mViewPager);
     }
 }

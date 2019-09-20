@@ -36,18 +36,18 @@ import com.bumptech.glide.request.RequestOptions;
 import com.hjq.toast.ToastUtils;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import com.tab.mmvtc_news.R;
-import com.tab.mmvtc_news.adapter.MyViewpaerAdapter;
+import com.tab.mmvtc_news.adapter.MyViewpageAdapter;
 import com.tab.mmvtc_news.fragment.AboutSchoolFragment;
 import com.tab.mmvtc_news.fragment.DepartmentFragment;
 import com.tab.mmvtc_news.fragment.HomeFragment;
 import com.tab.mmvtc_news.fragment.LibraryFragment;
 import com.tab.mmvtc_news.jwc.ChangePasswordActivity;
-import com.tab.mmvtc_news.jwc.CourseFragment;
+import com.tab.mmvtc_news.jwc.CourseActivity;
 import com.tab.mmvtc_news.jwc.FragmentAdapter;
 import com.tab.mmvtc_news.jwc.LoginActivity;
-import com.tab.mmvtc_news.jwc.MeFragment;
-import com.tab.mmvtc_news.jwc.MoreFragment;
-import com.tab.mmvtc_news.jwc.ScoreFragment;
+import com.tab.mmvtc_news.jwc.MeActivity;
+import com.tab.mmvtc_news.jwc.MoreActivity;
+import com.tab.mmvtc_news.jwc.ScoreActivity;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.callback.BitmapCallback;
 import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity
     private Toolbar mToolbar;
     private TabLayout tabLayout;
     private ViewPager mViewPager;
-    private MyViewpaerAdapter myViewpaerAdapter;
+    private MyViewpageAdapter myViewpageAdapter;
     List<String> images = new ArrayList<>();
     private Banner banner;
     String newsLink;
@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity
         fragments.add(new DepartmentFragment());
         fragments.add(new AboutSchoolFragment());
         fragments.add(new LibraryFragment());
-        fragments.add(new MoreFragment());
+        fragments.add(new MoreActivity());
         adapter = new FragmentAdapter(getSupportFragmentManager(), fragments);
         pager = (ViewPager) findViewById(R.id.vp);
         pager.setOffscreenPageLimit(5);
@@ -275,7 +275,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-//        myViewpaerAdapter = new MyViewpaerAdapter(getSupportFragmentManager(), titles, fragments);
+//        myViewpageAdapter = new MyViewpageAdapter(getSupportFragmentManager(), titles, fragments);
     }
 
     private void initTab() {
@@ -539,15 +539,15 @@ public class MainActivity extends AppCompatActivity
         if (isLogin) {
             if (id == R.id.nav_camera) {
 //            打开个人信息
-                Intent intent = new Intent(MainActivity.this, MeFragment.class);
+                Intent intent = new Intent(MainActivity.this, MeActivity.class);
                 startActivity(intent);
             } else if (id == R.id.nav_gallery) {
 //            打开历年成绩
-                Intent intent = new Intent(MainActivity.this, ScoreFragment.class);
+                Intent intent = new Intent(MainActivity.this, ScoreActivity.class);
                 startActivity(intent);
             } else if (id == R.id.nav_slideshow) {
 //            打开课程表
-                Intent intent = new Intent(MainActivity.this, CourseFragment.class);
+                Intent intent = new Intent(MainActivity.this, CourseActivity.class);
                 startActivity(intent);
             } else if (id == R.id.nav_manage) {
 //            打开修改密码
@@ -563,8 +563,10 @@ public class MainActivity extends AppCompatActivity
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     isLogin = false;
                                     tv_name.setText("未登录");
+                                    user_line.setVisibility(View.GONE);
                                     tv_desc.setText("");
                                     iv_avatar.setImageResource(R.drawable.default_avatar);
+                                    iv_back.setImageResource(R.color.colorPrimaryDark);
                                     SharedPreferences sp = getSharedPreferences("user", MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sp.edit();
                                     editor.remove("password");

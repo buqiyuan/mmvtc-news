@@ -143,3 +143,20 @@
 
 -keep class com.tab.mmvtc_news.jsonBean.** { *; }
 -keep class com.tab.mmvtc_news.model.** { *; }
+
+# glide混淆
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public class * extends com.bumptech.glide.module.AppGlideModule
+-keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}
+#glide如果你的API级别<=Android API 27 则需要添加 4.6.1
+-dontwarn com.bumptech.glide.load.resource.bitmap.VideoDecoder
+-dontwarn me.iwf.photopicker.adapter.**
+
+# For enumeration classes, see http://proguard.sourceforge.net/manual/examples.html#enumerations
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}

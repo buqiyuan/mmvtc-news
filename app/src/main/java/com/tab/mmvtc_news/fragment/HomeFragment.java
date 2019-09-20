@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tab.mmvtc_news.R;
-import com.tab.mmvtc_news.activity.GlideImageLoader;
+import com.tab.mmvtc_news.adapter.MyViewpageAdapter;
+import com.tab.mmvtc_news.utils.GlideImageLoader;
 import com.tab.mmvtc_news.activity.MainActivity;
-import com.tab.mmvtc_news.adapter.MyViewpaerAdapter;
 import com.tab.mmvtc_news.utils.LogUtil;
 import com.youth.banner.Banner;
 
@@ -26,7 +26,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager mViewPager;
-    private MyViewpaerAdapter myViewpaerAdapter;
+    private MyViewpageAdapter myViewpageAdapter;
     List<String> images = new ArrayList<>();
     private Banner banner;
     String newsLink;
@@ -72,7 +72,7 @@ public class HomeFragment extends Fragment {
         }
         newsLink = doc.select(".col-md-6 .news .title .pull-right a").attr("href");
         noticeLink = doc.select(".col-md-4 .news .title .pull-right a").attr("href");
-        xueshuLink = "http://www.mmvtc.cn/templet/xskyw/ShowClass.jsp?id=2002";
+        xueshuLink = "https://www.mmvtc.cn/templet/xskyw/ShowClass.jsp?id=2002";
         xibuLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(2) .more .pull-right a").attr("href");
         gaozhuanLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(3) .more .pull-right a").attr("href");
 
@@ -104,9 +104,9 @@ public class HomeFragment extends Fragment {
                 .setDelayTime(3000)
                 .start();
 
-        myViewpaerAdapter = new MyViewpaerAdapter(getChildFragmentManager(), titles, fragments);
+        myViewpageAdapter = new MyViewpageAdapter(getChildFragmentManager(), titles, fragments);
         mViewPager.setOffscreenPageLimit(6);
-        mViewPager.setAdapter(myViewpaerAdapter);
+        mViewPager.setAdapter(myViewpageAdapter);
         tabLayout.setupWithViewPager(mViewPager);
     }
 }

@@ -8,8 +8,8 @@ android {
         applicationId "com.mmvtc_news"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 6
-        versionName "1.0.6"
+        versionCode 7
+        versionName "1.0.7"
         multiDexEnabled = true//突破65535限制
         renderscriptTargetApi 27 as int
         renderscriptSupportModeEnabled true
@@ -60,9 +60,9 @@ android {
             // 显示Log
             buildConfigField "boolean", "LOG_DEBUG", "true"
             versionNameSuffix "-debug"
-            minifyEnabled false // 混淆
+            minifyEnabled true // 混淆
             zipAlignEnabled true // Zipalign优化
-            shrinkResources false  // 移除无用的resource文件
+            shrinkResources true  // 移除无用的resource文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
         }

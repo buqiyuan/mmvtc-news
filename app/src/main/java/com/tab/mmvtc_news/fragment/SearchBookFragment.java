@@ -189,7 +189,7 @@ public class SearchBookFragment extends BaseFragment {
                                         .execute(new BitmapCallback() {
                                             @Override
                                             public void onError(Call call, Exception e, int id) {
-                                                ToastUtils.show("获取图书封面失败！");
+//                                                ToastUtils.show("获取图书封面失败！");
                                             }
 
                                             @Override

@@ -15,12 +15,6 @@ import java.util.TreeMap;
 import okhttp3.Call;
 import okhttp3.Request;
 
-/**
- * 使用okhttp
- *
- * @author xuexiang
- * @since 2018/7/10 下午4:04
- */
 public class OKHttpUpdateHttpService implements IUpdateHttpService {
 
     public OKHttpUpdateHttpService() {
