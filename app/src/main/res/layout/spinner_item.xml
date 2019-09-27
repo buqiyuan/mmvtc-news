@@ -11,4 +11,4 @@
     android:padding="10dp"
     android:maxLines="1"
     android:text="New Text"
-    android:id="@+id/textView32" />
+    android:id="@+id/textView" />

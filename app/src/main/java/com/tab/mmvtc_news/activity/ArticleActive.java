@@ -153,7 +153,7 @@ public class ArticleActive extends AppCompatActivity {
                             String body = doc.select(".articleMain .articleContent").toString();
                             html = title + subTitle + body;
                         } else if (href.indexOf("jsjgcx") != -1) {
-                            // 机电系标题
+                            // 计算系标题
                             doc.select(".main .newsTitle").attr("style", "font-size:20px;color:#666;text-align:center;font-weight:800;");
                             String title = doc.select(".main .newsTitle").toString();
                             doc.select(".main .newsContent p").attr("style", "font-size:18px;color:#666;text-indent: 36px;");

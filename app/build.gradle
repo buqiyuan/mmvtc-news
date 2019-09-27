@@ -8,8 +8,8 @@ android {
         applicationId "com.mmvtc_news"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 7
-        versionName "1.0.7"
+        versionCode 8
+        versionName "1.0.8"
         multiDexEnabled = true//突破65535限制
         renderscriptTargetApi 27 as int
         renderscriptSupportModeEnabled true
@@ -66,6 +66,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 

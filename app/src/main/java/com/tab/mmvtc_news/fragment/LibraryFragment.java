@@ -22,44 +22,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LibraryFragment extends Fragment {
-    private Toolbar mToolbar;
     private TabLayout tabLayout;
     private ViewPager mViewPager;
     private MyViewpageAdapter myViewpageAdapter;
-    List<String> images = new ArrayList<>();
-    private Banner banner;
     String top_lendLink;
     String top_shelfLink;
-    String jdxxxLink;
-    String jsjgcxjiLink;
-    String skbLink;
     String top_bookLink;
-    private String studentName;
-    private static String cookie;
-    private String name;
-    private String url = "http://jwc.mmvtc.cn/";
-    private static String refererUrl = "";
-    private static String infoUrl = "";
-    private static String scoreUrl = "";
-    private static String xgPswUrl = "";
-    private static String courseUrl = "";
-    private ViewPager pager;
-    private TextView tv_studentName;
-    private TextView page_title;
-    private FragmentAdapter adapter;
     //tab标题
     private List<String> titles = new ArrayList<>();
 
     //fragments
     private List<Fragment> fragments = new ArrayList<>();
-    private ImageView iv_avatar;
-    private NavigationView navigationView;
-    private View headView;
-    private boolean flag = false;
-    private AlertDialog alertDialog;
-    private Boolean isLogin = false;
-    private TextView tv_name;
-    private TextView tv_desc;
     View view;
 
     @Override
@@ -76,7 +49,6 @@ public class LibraryFragment extends Fragment {
     private void initViews() {
         tabLayout = (TabLayout) view.findViewById(R.id.tl);
         mViewPager = (ViewPager) view.findViewById(R.id.vp);
-        banner = (Banner) view.findViewById(R.id.banner);
     }
 
     private void initDatas() {

@@ -11,8 +11,11 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -48,6 +52,7 @@ public class SearchBookFragment extends BaseFragment {
     private List<Content> content;
     private PullRefreshLayout layout;
     public boolean isLoading = false;//表示是否正处于加载状态
+    private Spinner spinner;
 
     @Override
     protected String getTitleName() {
@@ -70,6 +75,29 @@ public class SearchBookFragment extends BaseFragment {
         rvLibrary = (RecyclerView) view.findViewById(R.id.rv_search_library);
         layout = (PullRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
 
+        spinner = (Spinner) view.findViewById(R.id.sp_library);
+        /*
+         * 动态添显示下来菜单的选项，可以动态添加元素
+         */
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("任意词");
+        list.add("题名");
+        list.add("责任者");
+        list.add("主题词");
+        list.add("ISBN");
+        list.add("分类号");
+        list.add("索书号");
+        list.add("出版社");
+        list.add("丛书名");
+        /*
+         * 第二个参数是显示的布局
+         * 第三个参数是在布局显示的位置id
+         * 第四个参数是将要显示的数据
+         */
+        ArrayAdapter adapter = new ArrayAdapter(getActivity(), R.layout.spinner_item, R.id.textView,list);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new spinnerListener());
+
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,7 +106,17 @@ public class SearchBookFragment extends BaseFragment {
         });
         searchBook("鲁迅");
     }
-
+    class spinnerListener implements android.widget.AdapterView.OnItemSelectedListener{
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view,
+                                   int position, long id) {
+            String selected = parent.getItemAtPosition(position).toString();
+        }
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            System.out.println("nothingSelect");
+        }
+    }
     //    执行搜索
     private void doSearch() {
         String keyword = etLibrary.getText().toString().trim();
