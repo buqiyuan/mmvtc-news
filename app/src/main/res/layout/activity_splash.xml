@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:background="@drawable/splash">
 
-    <!--<com.tab.mmvtc_news.jwc.CustomVideoView-->
+    <!--<com.tab.mmvtc_news.views.CustomVideoView-->
         <!--android:id="@+id/videoview"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"-->

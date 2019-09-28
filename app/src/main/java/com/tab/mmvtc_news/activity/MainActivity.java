@@ -36,6 +36,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.hjq.toast.ToastUtils;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import com.tab.mmvtc_news.R;
+import com.tab.mmvtc_news.adapter.FragmentAdapter;
 import com.tab.mmvtc_news.adapter.MyViewpageAdapter;
 import com.tab.mmvtc_news.fragment.AboutSchoolFragment;
 import com.tab.mmvtc_news.fragment.DepartmentFragment;
@@ -43,7 +44,6 @@ import com.tab.mmvtc_news.fragment.HomeFragment;
 import com.tab.mmvtc_news.fragment.LibraryFragment;
 import com.tab.mmvtc_news.jwc.ChangePasswordActivity;
 import com.tab.mmvtc_news.jwc.CourseActivity;
-import com.tab.mmvtc_news.jwc.FragmentAdapter;
 import com.tab.mmvtc_news.jwc.LoginActivity;
 import com.tab.mmvtc_news.jwc.MeActivity;
 import com.tab.mmvtc_news.jwc.MoreActivity;
@@ -141,12 +141,14 @@ public class MainActivity extends AppCompatActivity
     private void getIndexData() {
         OkHttpUtils
                 .get()
-                .url("http://www.mmvtc.cn/templet/default/index.jsp")
+                .url("https://www.mmvtc.cn/templet/default/index.jsp")
                 .build()
+                .connTimeOut(10000)
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        ToastUtils.show("获取数据失败！");
+                        ToastUtils.show("获取数据失败！正在重连...");
+                        getIndexData();
                     }
 
                     @Override
@@ -159,7 +161,7 @@ public class MainActivity extends AppCompatActivity
                         }
                         newsLink = doc.select(".col-md-6 .news .title .pull-right a").attr("href");
                         noticeLink = doc.select(".col-md-4 .news .title .pull-right a").attr("href");
-                        xueshuLink = "http://www.mmvtc.cn/templet/xskyw/ShowClass.jsp?id=2002";
+                        xueshuLink = "https://www.mmvtc.cn/templet/xskyw/ShowClass.jsp?id=2002";
                         xibuLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(2) .more .pull-right a").attr("href");
                         gaozhuanLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(3) .more .pull-right a").attr("href");
                         initViews();
@@ -317,10 +319,10 @@ public class MainActivity extends AppCompatActivity
                     public void onResponse(String response, int id) {
                         Document doc = Jsoup.parse(response);
                         String phoneNumber = doc.select("#TELNUMBER").attr("value");
-                        if (!TextUtils.isEmpty(phoneNumber)){
+                        if (!TextUtils.isEmpty(phoneNumber)) {
                             user_line.setVisibility(View.VISIBLE);
                             tv_desc.setText(phoneNumber);
-                        }else {
+                        } else {
                             user_line.setVisibility(View.INVISIBLE);
                         }
                         String avatarUrl = url + doc.select("#xszp").attr("src");
@@ -409,7 +411,8 @@ public class MainActivity extends AppCompatActivity
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        ToastUtils.show("正在重新连接。。。");
+                        getCookie();
                     }
 
                     @Override
@@ -429,7 +432,8 @@ public class MainActivity extends AppCompatActivity
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        ToastUtils.show("正在尝试重新登录。。。若仍然未能自动登录成功，请手动登录！");
+                        autoLogin();
                     }
 
                     @Override

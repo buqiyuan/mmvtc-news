@@ -108,7 +108,7 @@ private TextView tv_title;
                         @Override
                         public void onResponse(String response, int id) {
                             getData(response);
-                            handler.sendEmptyMessage(0);
+//                            handler.sendEmptyMessage(0);
                         }
                     });
 
@@ -129,6 +129,9 @@ private TextView tv_title;
                 map.put("value", dom.getElementById(listValue1[i]).attr("value"));
                 list.add(map);
             }
+            ll_load.setVisibility(View.GONE);
+            adapter.notifyDataSetChanged();
+
         }
     };
 }

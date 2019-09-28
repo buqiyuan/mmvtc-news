@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.tab.mmvtc_news.R;
 import com.tab.mmvtc_news.adapter.MyViewpageAdapter;
-import com.tab.mmvtc_news.jwc.FragmentAdapter;
+import com.tab.mmvtc_news.adapter.FragmentAdapter;
 import com.youth.banner.Banner;
 
 import java.util.ArrayList;

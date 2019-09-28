@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.Call;
 
@@ -78,6 +80,7 @@ public class CourseActivity extends AppCompatActivity {
             tv_error = (TextView) findViewById(R.id.tv_error);
             ll_load.setVisibility(View.VISIBLE);
             tv_filter = (TextView) findViewById(R.id.tv_filter);
+            tv_title = (TextView) findViewById(R.id.tv_title);
             chooseDialogBuilder = new AlertDialog.Builder(this);
             tv_filter.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -167,6 +170,7 @@ public class CourseActivity extends AppCompatActivity {
 
         @Override
         public void run() {
+            getWeek();
             getViewstate();
         }
     };
@@ -279,6 +283,35 @@ public class CourseActivity extends AppCompatActivity {
 
     }
 
+    //    https://www.mmvtc.cn/templet/default/viewschedule.jsp?id=50553
+    private void getWeek() {
+        OkHttpUtils
+                .get()
+                .url("https://www.mmvtc.cn/templet/default/viewschedule.jsp?id=50553")
+                .tag(this)
+                .build()
+                .connTimeOut(20000)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Document html = Jsoup.parse(response);
+                        String tempStr = html.select("tbody .tabcolor .bigfont b").text();
+                        LogUtil.e("第几章",tempStr);
+                        Pattern pattern = Pattern.compile("第\\d周");
+                        Matcher matcher = pattern.matcher(tempStr);
+                        if (matcher.find()){
+                            LogUtil.e("匹配结果",matcher.group());
+                            tv_title.setText(tv_title.getText() +"(" +matcher.group()+")");
+                        }
+                    }
+                });
+    }
+
     private void getScoreItem(Document html) {
         __VIEWSTATE = html.select("#Form1 input[name=__VIEWSTATE]").attr("value");
         Elements table1 = html.select("#Table1");
@@ -329,13 +362,13 @@ public class CourseActivity extends AppCompatActivity {
 //                    LogUtils.e("tr",tr.toString());
 //                    LogUtils.i("tds",table.select("tr:nth-child(" + i + ") > td").toString());
             Map<String, String> map = new HashMap<String, String>();
-            map.put("monday", size > 0 ? Jsoup.parse(tds.get(0).html().replace("<br>", "~")).text().replace("~","\n").trim() : "");
-            map.put("tuesday", size > 1 ? Jsoup.parse(tds.get(1).html().replace("<br>", "~")).text().replace("~","\n").trim() : "");
-            map.put("wednesday", size > 2 ? Jsoup.parse(tds.get(2).html().replace("<br>", "~")).text().replace("~","\n").trim() : "");
-            map.put("thursday", size > 3 ? Jsoup.parse(tds.get(3).html().replace("<br>", "~")).text().replace("~","\n").trim() : "");
-            map.put("friday", size > 4 ? Jsoup.parse(tds.get(4).html().replace("<br>", "~")).text().replace("~","\n").trim() : "");
-            map.put("saturday", size > 5 ? Jsoup.parse(tds.get(5).html().replace("<br>", "~")).text().replace("~","\n").trim() : "");
-            map.put("sunday", size > 6 ? Jsoup.parse(tds.get(6).html().replace("<br>", "~")).text().replace("~","\n").trim() : "");
+            map.put("monday", size > 0 ? Jsoup.parse(tds.get(0).html().replace("<br>", "~")).text().replace("~", "\n").trim() : "");
+            map.put("tuesday", size > 1 ? Jsoup.parse(tds.get(1).html().replace("<br>", "~")).text().replace("~", "\n").trim() : "");
+            map.put("wednesday", size > 2 ? Jsoup.parse(tds.get(2).html().replace("<br>", "~")).text().replace("~", "\n").trim() : "");
+            map.put("thursday", size > 3 ? Jsoup.parse(tds.get(3).html().replace("<br>", "~")).text().replace("~", "\n").trim() : "");
+            map.put("friday", size > 4 ? Jsoup.parse(tds.get(4).html().replace("<br>", "~")).text().replace("~", "\n").trim() : "");
+            map.put("saturday", size > 5 ? Jsoup.parse(tds.get(5).html().replace("<br>", "~")).text().replace("~", "\n").trim() : "");
+            map.put("sunday", size > 6 ? Jsoup.parse(tds.get(6).html().replace("<br>", "~")).text().replace("~", "\n").trim() : "");
             courseList.add(map);
             Message msg = new Message();
             msg.what = 1;
@@ -343,6 +376,7 @@ public class CourseActivity extends AppCompatActivity {
             LogUtil.e("courseList", courseList.toString());
         }
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

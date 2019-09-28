@@ -1,22 +1,15 @@
 package com.tab.mmvtc_news.fragment;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.tab.mmvtc_news.R;
 import com.tab.mmvtc_news.adapter.MyViewpageAdapter;
-import com.tab.mmvtc_news.jwc.FragmentAdapter;
-import com.youth.banner.Banner;
 
 import java.util.ArrayList;
 import java.util.List;

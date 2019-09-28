@@ -2,15 +2,13 @@ package com.tab.mmvtc_news.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 
 import com.tab.mmvtc_news.R;
-import com.tab.mmvtc_news.jwc.CustomVideoView;
+import com.tab.mmvtc_news.views.CustomVideoView;
 
 public class SplashActivity extends Activity {
     private CustomVideoView videoview;

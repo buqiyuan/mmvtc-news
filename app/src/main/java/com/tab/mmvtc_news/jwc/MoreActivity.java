@@ -13,9 +13,10 @@ import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import com.tab.mmvtc_news.R;
 import com.tab.mmvtc_news.activity.TimeTableActive;
 import com.tab.mmvtc_news.activity.WebViewActivity;
+import com.tab.mmvtc_news.fragment.BaseFragment;
 import com.tab.mmvtc_news.utils.CProgressDialogUtils;
+import com.tab.mmvtc_news.views.CustomVideoView;
 import com.xuexiang.xupdate.XUpdate;
-import com.xuexiang.xupdate.proxy.IUpdateParser;
 import com.xuexiang.xupdate.proxy.impl.DefaultUpdateChecker;
 
 

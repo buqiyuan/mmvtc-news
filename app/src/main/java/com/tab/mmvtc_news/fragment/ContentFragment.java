@@ -24,6 +24,8 @@ import android.widget.Toast;
 import com.baoyz.widget.PullRefreshLayout;
 import com.tab.mmvtc_news.R;
 import com.tab.mmvtc_news.activity.ArticleActive;
+import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
+import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -36,6 +38,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -73,6 +77,7 @@ public class ContentFragment extends Fragment {
     private int previousFirstVisibleItem;   //记录前面第一个Item
     private int lastScrollY;            //记录ListView中最上面的Item(View)的上一次顶部Y坐标()
     private int scrollThreshold = 2;
+
     private int getTopItemScrollY() {
         if (mListView == null || mListView.getChildAt(0) == null) return 0;
         View topItem = mListView.getChildAt(0);
@@ -114,7 +119,7 @@ public class ContentFragment extends Fragment {
     }
 
     private void initView() {
-         View view = getView();
+        View view = getView();
         mListView = (ListView) view.findViewById(R.id.lv);
         layout = (PullRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
         textView = (TextView) view.findViewById(R.id.tv);
@@ -124,8 +129,8 @@ public class ContentFragment extends Fragment {
         loadMoreView.setVisibility(View.VISIBLE);
 
 
-        hideFabAS = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(),R.animator.scroll_hide_fab);
-        showFabAS = (AnimatorSet)AnimatorInflater.loadAnimator(getActivity(),R.animator.scroll_show_fab);
+        hideFabAS = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(), R.animator.scroll_hide_fab);
+        showFabAS = (AnimatorSet) AnimatorInflater.loadAnimator(getActivity(), R.animator.scroll_show_fab);
         //AnimatorInflater.loadAnimator加载动画
         hideFabAS.setTarget(fab_toTop);
         showFabAS.setTarget(fab_toTop);
@@ -140,7 +145,7 @@ public class ContentFragment extends Fragment {
     private void initData() {
 //        textView.setText(link);
         //初始化datas
-        getDatas(1);
+        getdatas(1);
         // key值数组，适配器通过key值取value，与列表项组件一一对应
         String[] from = {"time", "pv", "content"};
         // 列表项组件Id 数组
@@ -161,7 +166,7 @@ public class ContentFragment extends Fragment {
                         //设置刷新界面可见
                         loadMoreView.setVisibility(View.VISIBLE);
                         //获取更多数据
-                        getDatas(++page_index);
+                        getdatas(++page_index);
                         Log.e("page_index", String.valueOf(page_index));
                     }
                 }
@@ -174,37 +179,37 @@ public class ContentFragment extends Fragment {
                 System.out.println("last:  " + last_index);
                 System.out.println("total:  " + total_index);
                 //listview初始化的时候会回调onScroll
-                if(totalItemCount == 0) {
+                if (totalItemCount == 0) {
                     showFabAS.start();//
                     return;
                 }
                 //滚动过程中：ListView中最上面一个Item还是同一个Item
-                if(previousFirstVisibleItem == firstVisibleItem) {
-                    int newScrollY =  getTopItemScrollY();//获得当前最上方item Y坐标
+                if (previousFirstVisibleItem == firstVisibleItem) {
+                    int newScrollY = getTopItemScrollY();//获得当前最上方item Y坐标
                     boolean isExceedThreshold = Math.abs(lastScrollY - newScrollY) > scrollThreshold;
                     if (isExceedThreshold) {
                         if (lastScrollY > newScrollY && FAB_VISIBLE == true) {//下滑
                             FAB_VISIBLE = false;
                             hideFabAS.start();//FAB执行动画
-                        } else if(lastScrollY < newScrollY && FAB_VISIBLE == false){//上滑
+                        } else if (lastScrollY < newScrollY && FAB_VISIBLE == false) {//上滑
                             FAB_VISIBLE = true;
                             showFabAS.start();//FAB执行动画
                         }
                     }
                     lastScrollY = newScrollY;
                 } else {
-                    if (firstVisibleItem > previousFirstVisibleItem && FAB_VISIBLE == true){
+                    if (firstVisibleItem > previousFirstVisibleItem && FAB_VISIBLE == true) {
                         //向下滑动时FAB执行动画
-                        Log.e("向下滑动","向下滑动时FAB执行动画");
+                        Log.e("向下滑动", "向下滑动时FAB执行动画");
                         FAB_VISIBLE = false;
                         hideFabAS.start();
-                    } else if(firstVisibleItem < previousFirstVisibleItem && FAB_VISIBLE == false){
+                    } else if (firstVisibleItem < previousFirstVisibleItem && FAB_VISIBLE == false) {
                         //向上滑动时FAB执行动画
                         FAB_VISIBLE = true;
-                        Log.e("向上滑动","向上滑动");
+                        Log.e("向上滑动", "向上滑动");
                         showFabAS.start();
                     }
-                    lastScrollY =  getTopItemScrollY();
+                    lastScrollY = getTopItemScrollY();
                     previousFirstVisibleItem = firstVisibleItem;
                 }
             }
@@ -236,7 +241,7 @@ public class ContentFragment extends Fragment {
                         //刷新，先清除数据
                         datas.clear();
                         //再重新请求数据，通常是请求网络，获取最新数据
-                        getDatas(1);
+                        getdatas(1);
                         //刷新适配器
                         mAdapter.notifyDataSetChanged();
                         //刷新完成
@@ -249,158 +254,133 @@ public class ContentFragment extends Fragment {
         });
     }
 
-    private final MyHandler mHandler = new MyHandler(this);
-
-    static class MyHandler extends Handler {
-
-        private final WeakReference<ContentFragment> mActivity;
-
-        public MyHandler(ContentFragment activity) {
-            mActivity = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            System.out.println(msg);
-            if (mActivity.get() == null) {
-                return;
-            }
-            ContentFragment activity = mActivity.get();
-            switch (msg.what) {
-                case 1:
-                    //刷新适配器
-                    activity.mAdapter.notifyDataSetChanged();
-                    //加载完成
-                    activity.loadComplete();
-                    activity.mListView.setEnabled(true);
-                    break;
-            }
-        }
-    }
     /**
      * 上拉加载更多数据
      *
      * @param start 开始索引
      */
-    public void getDatas(final int start) {
+    private void getdatas(int start) {
         mListView.setEnabled(false);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //需要在子线程中处理的逻辑
-                Document doc = null;
-                try {
-                    Log.e("link", link + "&pn=" + start);
-                    doc = Jsoup.connect(link + "&pn=" + start).get();
-                    //获取总的页码
-                    if (!TextUtils.isEmpty(doc.select("#htmlPageCount").text().trim())){
-                        total_index = Integer.parseInt(doc.select("#htmlPageCount").text());
+        OkHttpUtils
+                .get()
+                .url(link + "&pn=" + start)
+                .tag(this)
+                .build()
+                .connTimeOut(20000)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        getdatas(1);
                     }
-                    // 如果是学术网
-                    if (link.indexOf("xskyw") != -1) {
-                        Elements elements = doc.select(".new .Column ul li");
-                        for (Element ele : elements) {
-                            String href = ele.select("a").attr("abs:href");
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("time", ele.select("span").text());
-                            map.put("pv", "阅读(0)");
-                            map.put("content", ele.select("a").text());
-                            map.put("href", href);
-                            datas.add(map);
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Document doc = Jsoup.parse(response, link);
+                        //获取总的页码
+                        if (!TextUtils.isEmpty(doc.select("#htmlPageCount").text().trim())) {
+                            total_index = Integer.parseInt(doc.select("#htmlPageCount").text());
                         }
-                        //如果是土木工程系
-                    } else if (link.indexOf("tmgcx") != -1) {
-                        Elements elements = doc.select(".content_wrap .info ul li");
-                        for (Element ele : elements) {
-                            String href = ele.select("a").attr("abs:href");
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("time", ele.select("span").text());
-                            map.put("pv", "");
-                            map.put("content", ele.select("a").text());
-                            map.put("href", href);
-                            datas.add(map);
-                        }
-                    } else if (link.indexOf("hxgcx") != -1) { //如果是化学程系
-                        Elements elements = doc.select(".list1-you ul li");
-                        for (Element ele : elements) {
-                            String href = ele.select("a").attr("abs:href");
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("time", ele.select(".r").text());
-                            map.put("pv", "");
-                            map.put("content", ele.select("a").text());
-                            map.put("href", href);
-                            datas.add(map);
-                        }
-                    } else if (link.indexOf("jjglx") != -1) { //如果是经济管理程系
-                        Elements elements = doc.select("#zhaopin1 ul li");
-                        for (Element ele : elements) {
-                            String href = ele.select("a").attr("abs:href");
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("time", ele.select(".riqi").text());
-                            map.put("pv", "");
-                            map.put("content", ele.select("a").text());
-                            map.put("href", href);
-                            datas.add(map);
-                        }
-                    } else if (link.indexOf("jdxxx") != -1) { //如果是机电系
-                        Elements elements = doc.select(".columnMain ul li");
-                        for (Element ele : elements) {
-                            String href = ele.select("a").attr("abs:href");
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("time", ele.select(".columnTitleTime").text());
-                            map.put("pv", "");
-                            map.put("content", ele.select(".columnTitleContent").text());
-                            map.put("href", href);
-                            datas.add(map);
-                        }
-                    } else if (link.indexOf("jsjgcx") != -1) { //如果是计算机系
-                        Elements elements = doc.select(".cbox ul li");
-                        for (Element ele : elements) {
-                            String href = ele.select("a").attr("abs:href");
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("time", ele.select(".text-right").text());
-                            map.put("pv", "");
-                            map.put("content", ele.select("a").text());
-                            map.put("href", href);
-                            datas.add(map);
-                        }
-                    } else if (link.indexOf("skb") != -1) { //如果是社科基础部
-                        Elements elements = doc.select("#list-you ul li");
-                        for (Element ele : elements) {
-                            String href = ele.select("a").attr("abs:href");
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("time", ele.select("span").text());
-                            map.put("pv", "");
-                            map.put("content", ele.select("a").text());
-                            map.put("href", href);
-                            datas.add(map);
-                        }
-                    } else {
-                        Elements elements = doc.select(".right_zi .list-unstyled li");
-                        for (Element ele : elements) {
-                            String href = ele.select("a").attr("abs:href");
-                            //判断是否是否是外部链接
-                            if (href.indexOf("mmvtc") != -1) {
+                        // 如果是学术网
+                        if (link.indexOf("xskyw") != -1) {
+                            Elements elements = doc.select(".new .Column ul li");
+                            for (Element ele : elements) {
+                                String href = ele.select("a").attr("abs:href");
                                 Map<String, String> map = new HashMap<String, String>();
-                                map.put("time", ele.select(".meta time").text());
-                                map.put("pv", ele.select(".meta .pv").text());
-                                map.put("content", ele.select("div:last-child").text());
-                                map.put("href", ele.select("a").attr("abs:href"));
+                                map.put("time", ele.select("span").text());
+                                map.put("pv", "阅读(0)");
+                                map.put("content", ele.select("a").text());
+                                map.put("href", href);
                                 datas.add(map);
                             }
+                            //如果是土木工程系
+                        } else if (link.indexOf("tmgcx") != -1) {
+                            Elements elements = doc.select(".content_wrap .info ul li");
+                            for (Element ele : elements) {
+                                String href = ele.select("a").attr("abs:href");
+                                Map<String, String> map = new HashMap<String, String>();
+                                map.put("time", ele.select("span").text());
+                                map.put("pv", "");
+                                map.put("content", ele.select("a").text());
+                                map.put("href", href);
+                                datas.add(map);
+                            }
+                        } else if (link.indexOf("hxgcx") != -1) { //如果是化学程系
+                            Elements elements = doc.select(".list1-you ul li");
+                            for (Element ele : elements) {
+                                String href = ele.select("a").attr("abs:href");
+                                Map<String, String> map = new HashMap<String, String>();
+                                map.put("time", ele.select(".r").text());
+                                map.put("pv", "");
+                                map.put("content", ele.select("a").text());
+                                map.put("href", href);
+                                datas.add(map);
+                            }
+                        } else if (link.indexOf("jjglx") != -1) { //如果是经济管理程系
+                            Elements elements = doc.select("#zhaopin1 ul li");
+                            for (Element ele : elements) {
+                                String href = ele.select("a").attr("abs:href");
+                                Map<String, String> map = new HashMap<String, String>();
+                                map.put("time", ele.select(".riqi").text());
+                                map.put("pv", "");
+                                map.put("content", ele.select("a").text());
+                                map.put("href", href);
+                                datas.add(map);
+                            }
+                        } else if (link.indexOf("jdxxx") != -1) { //如果是机电系
+                            Elements elements = doc.select(".columnMain ul li");
+                            for (Element ele : elements) {
+                                String href = ele.select("a").attr("abs:href");
+                                Map<String, String> map = new HashMap<String, String>();
+                                map.put("time", ele.select(".columnTitleTime").text());
+                                map.put("pv", "");
+                                map.put("content", ele.select(".columnTitleContent").text());
+                                map.put("href", href);
+                                datas.add(map);
+                            }
+                        } else if (link.indexOf("jsjgcx") != -1) { //如果是计算机系
+                            Elements elements = doc.select(".cbox ul li");
+                            for (Element ele : elements) {
+                                String href = ele.select("a").attr("abs:href");
+                                Map<String, String> map = new HashMap<String, String>();
+                                map.put("time", ele.select(".text-right").text());
+                                map.put("pv", "");
+                                map.put("content", ele.select("a").text());
+                                map.put("href", href);
+                                datas.add(map);
+                            }
+                        } else if (link.indexOf("skb") != -1) { //如果是社科基础部
+                            Elements elements = doc.select("#list-you ul li");
+                            for (Element ele : elements) {
+                                String href = ele.select("a").attr("abs:href");
+                                Map<String, String> map = new HashMap<String, String>();
+                                map.put("time", ele.select("span").text());
+                                map.put("pv", "");
+                                map.put("content", ele.select("a").text());
+                                map.put("href", href);
+                                datas.add(map);
+                            }
+                        } else {
+                            Elements elements = doc.select(".right_zi .list-unstyled li");
+                            for (Element ele : elements) {
+                                String href = ele.select("a").attr("abs:href");
+                                //判断是否是否是外部链接
+                                if (href.indexOf("mmvtc") != -1) {
+                                    Map<String, String> map = new HashMap<String, String>();
+                                    map.put("time", ele.select(".meta time").text());
+                                    map.put("pv", ele.select(".meta .pv").text());
+                                    map.put("content", ele.select("div:last-child").text());
+                                    map.put("href", ele.select("a").attr("abs:href"));
+                                    datas.add(map);
+                                }
+                            }
                         }
+                        mAdapter.notifyDataSetChanged();
+                        //加载完成
+                        loadComplete();
+                        mListView.setEnabled(true);
                     }
-                    Log.e("datas", datas.toString());
-                    Message msg = new Message();
-                    msg.what = 1;
-                    mHandler.sendMessage(msg);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+                });
     }
-
 
     /**
      * 加载完成
@@ -408,7 +388,6 @@ public class ContentFragment extends Fragment {
     public void loadComplete() {
         loadMoreView.setVisibility(View.GONE);//设置刷新界面不可见
         isLoading = false;//设置正在刷新标志位false
-        mHandler.removeCallbacksAndMessages(null);
 //        mListView.removeFooterView(loadMoreView);//如果是最后一页的话，则将其从ListView中移出
     }
 }
