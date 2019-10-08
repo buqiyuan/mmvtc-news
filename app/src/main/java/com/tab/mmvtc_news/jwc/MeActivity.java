@@ -43,7 +43,7 @@ public class MeActivity extends AppCompatActivity {
 
     private String[] listKey1 = {"籍贯", "出生地", "宿舍号", "电子邮箱", "联系电话", "邮政编码", "家庭所在地"};
     private String[] listValue1 = {"txtjg", "csd", "ssh", "dzyxdz", "lxdh", "yzbm", "jtszd"};
-private TextView tv_title;
+    private TextView tv_title;
     private LinearLayout ll_load;
 
     @Override
@@ -51,7 +51,7 @@ private TextView tv_title;
         super.onCreate(savedInstanceState);
         {
             setContentView(R.layout.fragment_me);
-            ll_load = (LinearLayout)findViewById(R.id.ll_load);
+            ll_load = (LinearLayout) findViewById(R.id.ll_load);
             ll_load.setVisibility(View.VISIBLE);
 
             SharedPreferences sp = getSharedPreferences("user", MODE_PRIVATE);

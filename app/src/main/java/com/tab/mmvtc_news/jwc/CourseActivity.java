@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -22,6 +23,7 @@ import com.tab.mmvtc_news.adapter.MyBaseAdapter;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
 import com.tab.mmvtc_news.utils.LogUtil;
+import com.tab.mmvtc_news.views.NoScrollListView;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,7 +31,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,17 +74,21 @@ public class CourseActivity extends AppCompatActivity {
     private String __VIEWSTATE;
     private List<String> semester = new ArrayList<String>();
     private TextView tv_error;
+    private TextView tv_monday;
+    private TextView tv_tuesday;
+    private TextView tv_wednesday;
+    private TextView tv_thursday;
+    private TextView tv_friday;
+    private TextView tv_saturday;
+    private TextView tv_sunday;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         {
             setContentView(R.layout.fragment_course);
-            ll_load = (LinearLayout) findViewById(R.id.ll_load);
-            tv_error = (TextView) findViewById(R.id.tv_error);
-            ll_load.setVisibility(View.VISIBLE);
-            tv_filter = (TextView) findViewById(R.id.tv_filter);
-            tv_title = (TextView) findViewById(R.id.tv_title);
+            initView();
+            setCurrentDay();
             chooseDialogBuilder = new AlertDialog.Builder(this);
             tv_filter.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -117,6 +125,53 @@ public class CourseActivity extends AppCompatActivity {
                 }
             });
             new Thread(runnable).start();
+        }
+    }
+
+    private void initView() {
+        ll_load = (LinearLayout) findViewById(R.id.ll_load);
+        tv_error = (TextView) findViewById(R.id.tv_error);
+        ll_load.setVisibility(View.VISIBLE);
+        tv_filter = (TextView) findViewById(R.id.tv_filter);
+        tv_title = (TextView) findViewById(R.id.tv_title);
+//    "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday
+        tv_monday = (TextView) findViewById(R.id.tv_monday);
+        tv_tuesday = (TextView) findViewById(R.id.tv_tuesday);
+        tv_wednesday = (TextView) findViewById(R.id.tv_wednesday);
+        tv_thursday = (TextView) findViewById(R.id.tv_thursday);
+        tv_friday = (TextView) findViewById(R.id.tv_friday);
+        tv_saturday = (TextView) findViewById(R.id.tv_saturday);
+        tv_sunday = (TextView) findViewById(R.id.tv_sunday);
+    }
+
+    private void setCurrentDay() {
+        long time = System.currentTimeMillis();
+        Date date = new Date(time);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 EEEE");
+        format = new SimpleDateFormat("EEEE");
+        Log.e("time", "time=" + format.format(date));
+        switch (format.format(date)) {
+            case "星期一":
+                tv_monday.setBackgroundResource(R.drawable.week_active);
+                break;
+            case "星期二":
+                tv_tuesday.setBackgroundResource(R.drawable.week_active);
+                break;
+            case "星期三":
+                tv_wednesday.setBackgroundResource(R.drawable.week_active);
+                break;
+            case "星期四":
+                tv_thursday.setBackgroundResource(R.drawable.week_active);
+                break;
+            case "星期五":
+                tv_friday.setBackgroundResource(R.drawable.week_active);
+                break;
+            case "星期六":
+                tv_saturday.setBackgroundResource(R.drawable.week_active);
+                break;
+            case "星期日":
+                tv_sunday.setBackgroundResource(R.drawable.week_active);
+                break;
         }
     }
 
@@ -175,6 +230,7 @@ public class CourseActivity extends AppCompatActivity {
         }
     };
 
+    //弹出过滤菜单选项
     private void showFilterMenu(List<String> year, List<String> semester) {
         View view = View.inflate(this, R.layout.dialog_filter, null);
         TextView tvFirst = (TextView) view.findViewById(R.id.tv_first);
@@ -230,6 +286,7 @@ public class CourseActivity extends AppCompatActivity {
         });
     }
 
+    //过滤课表
     private void filterCourse(String xn, String xq) {
         Map<String, String> headers = new HashMap<String, String>();
         headers.clear();
@@ -270,7 +327,7 @@ public class CourseActivity extends AppCompatActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        getViewstate();
                     }
 
                     @Override
@@ -283,11 +340,14 @@ public class CourseActivity extends AppCompatActivity {
 
     }
 
-    //    https://www.mmvtc.cn/templet/default/viewschedule.jsp?id=50553
+    //获取当前周数
     private void getWeek() {
+        SharedPreferences sp = getSharedPreferences("user", MODE_PRIVATE);
+        String weekUrl = sp.getString("weekUrl", null);
+        Log.e("weekUrl", weekUrl);
         OkHttpUtils
                 .get()
-                .url("https://www.mmvtc.cn/templet/default/viewschedule.jsp?id=50553")
+                .url("https://www.mmvtc.cn" + weekUrl)
                 .tag(this)
                 .build()
                 .connTimeOut(20000)
@@ -301,12 +361,14 @@ public class CourseActivity extends AppCompatActivity {
                     public void onResponse(String response, int id) {
                         Document html = Jsoup.parse(response);
                         String tempStr = html.select("tbody .tabcolor .bigfont b").text();
-                        LogUtil.e("第几章",tempStr);
+                        LogUtil.e("第几周", tempStr);
                         Pattern pattern = Pattern.compile("第\\d周");
                         Matcher matcher = pattern.matcher(tempStr);
-                        if (matcher.find()){
-                            LogUtil.e("匹配结果",matcher.group());
-                            tv_title.setText(tv_title.getText() +"(" +matcher.group()+")");
+                        if (matcher.find()) {
+
+                            LogUtil.e("匹配结果", matcher.group());
+
+                            tv_title.setText(tv_title.getText() + "(" + matcher.group() + ")");
                         }
                     }
                 });
@@ -324,7 +386,6 @@ public class CourseActivity extends AppCompatActivity {
             mHandler.sendMessage(msg);
             return;
         }
-//                LogUtils.e("trs",trs.toString());
         courseList.clear();
         year.clear();
         semester.clear();
@@ -353,14 +414,8 @@ public class CourseActivity extends AppCompatActivity {
             if (i % 2 == 0) {
                 continue;
             }
-//           String tempStr = tr.toString().replace("<br>", "").replace("&nbsp;", "");
-//            Document tr_doc = Jsoup.parse(tempStr);
-//            Log.i("size", String.valueOf(tr_doc));
             Elements tds = tr.select("td[align=Center]");
             int size = tds.size();
-
-//                    LogUtils.e("tr",tr.toString());
-//                    LogUtils.i("tds",table.select("tr:nth-child(" + i + ") > td").toString());
             Map<String, String> map = new HashMap<String, String>();
             map.put("monday", size > 0 ? Jsoup.parse(tds.get(0).html().replace("<br>", "~")).text().replace("~", "\n").trim() : "");
             map.put("tuesday", size > 1 ? Jsoup.parse(tds.get(1).html().replace("<br>", "~")).text().replace("~", "\n").trim() : "");

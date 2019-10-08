@@ -1,35 +1,26 @@
 package com.tab.mmvtc_news.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.hjq.toast.ToastUtils;
 import com.tab.mmvtc_news.R;
-import com.tab.mmvtc_news.jwc.NoScrollListView;
+import com.tab.mmvtc_news.views.NoScrollListView;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
-import com.tab.mmvtc_news.utils.LogUtil;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

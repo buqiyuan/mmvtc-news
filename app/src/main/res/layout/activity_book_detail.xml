@@ -54,7 +54,7 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <com.tab.mmvtc_news.jwc.NoScrollListView
+                <com.tab.mmvtc_news.views.NoScrollListView
                     android:id="@+id/lv_info"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
@@ -124,7 +124,7 @@
                     android:layout_height="1dp"
                     android:background="#c9ccce" />
 
-                <com.tab.mmvtc_news.jwc.NoScrollListView
+                <com.tab.mmvtc_news.views.NoScrollListView
                     android:id="@+id/lv_collect"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />

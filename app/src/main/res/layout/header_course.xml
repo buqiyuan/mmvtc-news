@@ -17,73 +17,66 @@
         android:text="@string/days" />
 
     <TextView
+        android:id="@+id/tv_monday"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/courseTextColor"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:textSize="12sp"
         android:text="@string/monday" />
     <TextView
+        android:id="@+id/tv_tuesday"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/courseTextColor"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:textSize="12sp"
         android:text="@string/tuesday" />
     <TextView
+        android:id="@+id/tv_wednesday"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/courseTextColor"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:textSize="12sp"
         android:text="@string/wednesday" />
     <TextView
+        android:id="@+id/tv_thursday"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/courseTextColor"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:textSize="12sp"
         android:text="@string/thursday" />
     <TextView
+        android:id="@+id/tv_friday"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/courseTextColor"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:textSize="12sp"
         android:text="@string/friday" />
     <TextView
+        android:id="@+id/tv_saturday"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/courseTextColor"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:textSize="12sp"
         android:text="@string/saturday" />
     <TextView
+        android:id="@+id/tv_sunday"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_weight="1"
         android:gravity="center"
         android:textColor="@color/courseTextColor"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:textSize="12sp"
         android:text="@string/sunday" />
 

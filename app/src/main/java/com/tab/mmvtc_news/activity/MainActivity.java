@@ -46,7 +46,7 @@ import com.tab.mmvtc_news.jwc.ChangePasswordActivity;
 import com.tab.mmvtc_news.jwc.CourseActivity;
 import com.tab.mmvtc_news.jwc.LoginActivity;
 import com.tab.mmvtc_news.jwc.MeActivity;
-import com.tab.mmvtc_news.jwc.MoreActivity;
+import com.tab.mmvtc_news.fragment.MoreFragment;
 import com.tab.mmvtc_news.jwc.ScoreActivity;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.callback.BitmapCallback;
@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity
     private static String scoreUrl = "";
     private static String xgPswUrl = "";
     private static String courseUrl = "";
+    private static String weekUrl = "";
     private ViewPager pager;
     private TextView tv_studentName;
     private FragmentAdapter adapter;
@@ -164,6 +165,8 @@ public class MainActivity extends AppCompatActivity
                         xueshuLink = "https://www.mmvtc.cn/templet/xskyw/ShowClass.jsp?id=2002";
                         xibuLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(2) .more .pull-right a").attr("href");
                         gaozhuanLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(3) .more .pull-right a").attr("href");
+                        weekUrl = doc.select(".left-vertical-menu .list-unstyled li:nth-of-type(1) a").attr("href");
+                        Log.e("weekUrl",weekUrl);
                         initViews();
                         initDatas();
                         initEvents();
@@ -211,7 +214,7 @@ public class MainActivity extends AppCompatActivity
         fragments.add(new DepartmentFragment());
         fragments.add(new AboutSchoolFragment());
         fragments.add(new LibraryFragment());
-        fragments.add(new MoreActivity());
+        fragments.add(new MoreFragment());
         adapter = new FragmentAdapter(getSupportFragmentManager(), fragments);
         pager = (ViewPager) findViewById(R.id.vp);
         pager.setOffscreenPageLimit(5);
@@ -243,6 +246,7 @@ public class MainActivity extends AppCompatActivity
             editor.putString("courseUrl", courseUrl);
             editor.putString("xgPswUrl", xgPswUrl);
             editor.putString("refererUrl", refererUrl);
+            editor.putString("weekUrl", weekUrl);
             editor.commit();
         } else if (isLogin) {
             password = sp.getString("password", null);

@@ -81,80 +81,44 @@ public class MyBaseAdapter extends BaseAdapter {
         saturday.setText(map.get("saturday"));
         sunday.setText(map.get("sunday"));
         Log.e("viewHolder", tuesday.getText().toString());
-        Random random = new Random();
-        if (!TextUtils.isEmpty(map.get("monday").trim()) && monday.getText().toString().trim().length() > 6) {
-            monday.setBackgroundResource(courseBgColors[random.nextInt(7)]);
-        }
-        if (!TextUtils.isEmpty(map.get("tuesday").trim()) && tuesday.getText().toString().trim().length() > 6) {
-            tuesday.setBackgroundResource(courseBgColors[random.nextInt(7)]);
-        }
-        if (!TextUtils.isEmpty(map.get("wednesday").trim()) && wednesday.getText().toString().trim().length() > 6) {
-            wednesday.setBackgroundResource(courseBgColors[random.nextInt(7)]);
-        }
-        if (!TextUtils.isEmpty(map.get("thursday").trim()) && thursday.getText().toString().trim().length() > 6) {
-            thursday.setBackgroundResource(courseBgColors[random.nextInt(7)]);
-        }
-        if (!TextUtils.isEmpty(map.get("friday").trim()) && friday.getText().toString().trim().length() > 6) {
-            friday.setBackgroundResource(courseBgColors[random.nextInt(7)]);
-        }
-        if (!TextUtils.isEmpty(map.get("saturday").trim()) && saturday.getText().toString().trim().length() > 6) {
-            saturday.setBackgroundResource(courseBgColors[random.nextInt(7)]);
-        }
-        if (!TextUtils.isEmpty(map.get("sunday").trim()) && sunday.getText().toString().trim().length() > 6) {
-            sunday.setBackgroundResource(courseBgColors[random.nextInt(7)]);
-        }
 
+        setRandomBgColor(map, "monday", monday);
+        setRandomBgColor(map, "tuesday", tuesday);
+        setRandomBgColor(map, "wednesday", wednesday);
+        setRandomBgColor(map, "thursday", thursday);
+        setRandomBgColor(map, "friday", friday);
+        setRandomBgColor(map, "saturday", saturday);
+        setRandomBgColor(map, "sunday", sunday);
 
         final View finalConvertView = convertView;
         View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 TextView tv = (TextView) finalConvertView.findViewById(v.getId());
-                if (TextUtils.isEmpty(tv.getText().toString().trim())){
+                if (TextUtils.isEmpty(tv.getText().toString().trim())) {
                     return;
                 }
                 switch (v.getId()) {
                     case R.id.tv_monday:
-                        new SweetAlertDialog(ctx)
-                                .setTitleText("课程详情")
-                                .setContentText(monday.getText().toString())
-                                .show();
+                        showAlertDialog(monday);
                         break;
                     case R.id.tv_tuesday:
-                        new SweetAlertDialog(ctx)
-                                .setTitleText("课程详情")
-                                .setContentText(tuesday.getText().toString())
-                                .show();
+                        showAlertDialog(tuesday);
                         break;
                     case R.id.tv_wednesday:
-                        new SweetAlertDialog(ctx)
-                                .setTitleText("课程详情")
-                                .setContentText(wednesday.getText().toString())
-                                .show();
+                        showAlertDialog(wednesday);
                         break;
                     case R.id.tv_thursday:
-                        new SweetAlertDialog(ctx)
-                                .setTitleText("课程详情")
-                                .setContentText(thursday.getText().toString())
-                                .show();
+                        showAlertDialog(thursday);
                         break;
                     case R.id.tv_friday:
-                        new SweetAlertDialog(ctx)
-                                .setTitleText("课程详情")
-                                .setContentText(friday.getText().toString())
-                                .show();
+                        showAlertDialog(friday);
                         break;
                     case R.id.tv_saturday:
-                        new SweetAlertDialog(ctx)
-                                .setTitleText("课程详情")
-                                .setContentText(saturday.getText().toString())
-                                .show();
+                        showAlertDialog(saturday);
                         break;
                     case R.id.tv_sunday:
-                        new SweetAlertDialog(ctx)
-                                .setTitleText("课程详情")
-                                .setContentText(sunday.getText().toString())
-                                .show();
+                        showAlertDialog(sunday);
                         break;
                 }
             }
@@ -177,5 +141,21 @@ public class MyBaseAdapter extends BaseAdapter {
         public TextView friday;
         public TextView saturday;
         public TextView sunday;
+    }
+
+    //    设置随机背景颜色
+    private void setRandomBgColor(Map<String, String> map, String day, TextView tv) {
+        Random random = new Random();
+        if (!TextUtils.isEmpty(map.get(day).trim()) && tv.getText().toString().trim().length() > 6) {
+            tv.setBackgroundResource(courseBgColors[random.nextInt(7)]);
+        }
+    }
+
+    //    弹出课程详情框
+    private void showAlertDialog(TextView tv) {
+        new SweetAlertDialog(ctx)
+                .setTitleText("课程详情")
+                .setContentText(tv.getText().toString())
+                .show();
     }
 }
