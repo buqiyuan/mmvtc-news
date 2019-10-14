@@ -2,6 +2,7 @@ package com.tab.mmvtc_news;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -108,7 +109,10 @@ public class MyApplication extends Application {
                         }else if (error.getCode() == 2002) {
                             ToastUtils.show("没有网络");
                         }else if (error.getCode() == 2004) {
-                            ToastUtils.show("无最新版本");
+                            SharedPreferences sp = getSharedPreferences("user", MODE_PRIVATE);
+                            if (!sp.getBoolean("isAutoUpdate",true)){
+                                ToastUtils.show("当前已是最新版本！");
+                            }
                         }
                     }
                 })

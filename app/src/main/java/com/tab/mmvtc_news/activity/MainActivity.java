@@ -51,7 +51,10 @@ import com.tab.mmvtc_news.jwc.ScoreActivity;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.callback.BitmapCallback;
 import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
+import com.tab.mmvtc_news.utils.CProgressDialogUtils;
 import com.tab.mmvtc_news.utils.LogUtil;
+import com.xuexiang.xupdate.XUpdate;
+import com.xuexiang.xupdate.proxy.impl.DefaultUpdateChecker;
 import com.xuexiang.xupdate.utils.UpdateUtils;
 import com.youth.banner.Banner;
 
@@ -125,6 +128,7 @@ public class MainActivity extends AppCompatActivity
     private RelativeLayout ll_header;
     private static Document doc = null;
     private ImageView user_line;
+    private String mUpdateUrl = "https://buqiyuan.xyz/my-demo/app_update.json";
 
     public static Document getDocument() {
         return doc;
@@ -135,6 +139,28 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         itemsName = getResources().getStringArray(R.array.mainItemsName);
+// 自动检查更新
+        XUpdate.newBuild(this)
+                .updateUrl(mUpdateUrl)
+                .updateChecker(new DefaultUpdateChecker() {
+                    @Override
+                    public void onBeforeCheck() {
+                        super.onBeforeCheck();
+                        SharedPreferences sp = getSharedPreferences("user", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putBoolean("isAutoUpdate", true);
+                        editor.commit();
+                    }
+                    @Override
+                    public void onAfterCheck() {
+                        super.onAfterCheck();
+                    }
+                })
+                .themeColor(getResources().getColor(R.color.update_theme_color))
+                .topResId(R.mipmap.bg_update_top)
+                .supportBackgroundUpdate(true)
+                .update();
+//获取学院首页数据
         getIndexData();
         //banner设置方法全部调用完毕时最后调用
     }
@@ -227,6 +253,8 @@ public class MainActivity extends AppCompatActivity
     private void initDatas() {
         Intent intent = getIntent();
         SharedPreferences sp = getSharedPreferences("user", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("weekUrl", weekUrl);
         isLogin = sp.contains("password");
 //        判断用户是否是登录状态，根据密码判断
         if (intent.getBooleanExtra("isLogin", false)) {
@@ -238,7 +266,6 @@ public class MainActivity extends AppCompatActivity
             scoreUrl = url + intent.getStringExtra("scoreUrl");
             courseUrl = url + intent.getStringExtra("courseUrl");
             refererUrl = "http://jwc.mmvtc.cn/xs_main.aspx?xh=" + name;
-            SharedPreferences.Editor editor = sp.edit();
             editor.putString("studentName", studentName);
             editor.putString("cookie", cookie);
             editor.putString("infoUrl", infoUrl);
@@ -246,8 +273,6 @@ public class MainActivity extends AppCompatActivity
             editor.putString("courseUrl", courseUrl);
             editor.putString("xgPswUrl", xgPswUrl);
             editor.putString("refererUrl", refererUrl);
-            editor.putString("weekUrl", weekUrl);
-            editor.commit();
         } else if (isLogin) {
             password = sp.getString("password", null);
             name = sp.getString("name", null);
@@ -258,6 +283,7 @@ public class MainActivity extends AppCompatActivity
             scoreUrl = sp.getString("scoreUrl", null);
             courseUrl = sp.getString("courseUrl", null);
         }
+        editor.commit();
 //        设置用户名
         if (isLogin) {
             if (sp.contains("studentName") && sp.getString("studentName", null) != "") {

@@ -1,8 +1,10 @@
 package com.tab.mmvtc_news.fragment;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.View;
@@ -146,6 +148,10 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
                         @Override
                         public void onBeforeCheck() {
                             super.onBeforeCheck();
+                            SharedPreferences sp = getActivity().getSharedPreferences("user", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putBoolean("isAutoUpdate", false);
+                            editor.commit();
                             CProgressDialogUtils.showProgressDialog(getActivity(), "获取版本信息中...");
                         }
                         @Override
