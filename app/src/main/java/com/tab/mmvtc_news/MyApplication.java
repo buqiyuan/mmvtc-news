@@ -13,6 +13,7 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.hjq.toast.ToastUtils;
+import com.mob.MobSDK;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.https.HttpsUtils;
 import com.tab.mmvtc_news.okhttpUtil.log.LoggerInterceptor;
@@ -87,6 +88,7 @@ public class MyApplication extends Application {
                 .build();
         OkHttpUtils.initClient(okHttpClient);
         initUpdate();
+        MobSDK.init(this);
     }
 
     private void initUpdate() {

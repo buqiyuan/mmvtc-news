@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.mob.sdk'
 
 android {
 //    useLibrary 'org.apache.http.legacy'
@@ -17,10 +18,10 @@ android {
     }
     signingConfigs {
         debug {
-            keyAlias 'key0'
-            keyPassword '19971130'
-            storeFile file('D:\\AndroidProjects\\mmvtc_news.jks')
-            storePassword '19971130'
+//            keyAlias 'key0'
+//            keyPassword '19971130'
+//            storeFile file('D:\\AndroidProjects\\mmvtc_news.jks')
+//            storePassword '19971130'
         }
         relealse {
             keyAlias 'key0'
@@ -48,8 +49,9 @@ android {
                     def outputFile = output.outputFile
                     if (outputFile != null && outputFile.name.endsWith('.apk')) {
                         //这里修改apk文件名
-                        def fileName = "茂职院校园信息_${defaultConfig.versionCode}" +
-                                "_${defaultConfig.versionName}.apk"
+                        def fileName = "mmvtc_news.apk"
+//                        def fileName = "茂职院校园信息_${defaultConfig.versionCode}" +
+//                                "_${defaultConfig.versionName}.apk"
                         //output.outputFile = new File(outputFile.parent, fileName)    //3.0以下
                         outputFileName = fileName                                      //3.0以上
                     }
@@ -58,13 +60,13 @@ android {
         }
         debug {
             // 显示Log
-            buildConfigField "boolean", "LOG_DEBUG", "true"
-            versionNameSuffix "-debug"
-            minifyEnabled true // 混淆
-            zipAlignEnabled true // Zipalign优化
-            shrinkResources true  // 移除无用的resource文件
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.debug
+//            buildConfigField "boolean", "LOG_DEBUG", "true"
+//            versionNameSuffix "-debug"
+//            minifyEnabled true // 混淆
+//            zipAlignEnabled true // Zipalign优化
+//            shrinkResources true  // 移除无用的resource文件
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.debug
         }
     }
     compileOptions {
@@ -109,4 +111,40 @@ dependencies {
     implementation 'com.baoyz.pullrefreshlayout:library:1.2.0'
     implementation 'com.youth.banner:banner:1.4.10'
     implementation 'com.github.xuexiangjys:XUpdate:1.1.0'
+}
+//接入第三方分享功能
+MobSDK {
+    appKey "2cdf20a639d98"
+    appSecret "9bc20ed352124d0908dbc9eee0988175"
+    ShareSDK {
+        loopShare true
+        devInfo {
+            SinaWeibo {
+                appKey "568898243"
+                appSecret "38a4f8204cc784f81f9f0daaf31e02e3"
+                callbackUri "http://www.sharesdk.cn"
+            }
+            Wechat {
+                appId "wx4868b35061f87885"
+                appSecret "64020361b8ec4c99936c0e3999a9f249"
+                userName "gh_afb25ac019c9"
+                path "pages/index/index.html?id=1"
+                withShareTicket true
+                miniprogramType 2
+            }
+            QQ {
+                appId "100371282"
+                appKey "aed9b0303e3ed1e27bae87c33761161d"
+            }
+            ShortMessage {}
+            WechatMoments {
+                appId "wx4868b35061f87885"
+                appSecret "64020361b8ec4c99936c0e3999a9f249"
+            }
+            WechatFavorite {
+                appId "wx4868b35061f87885"
+                appSecret "64020361b8ec4c99936c0e3999a9f249"
+            }
+        }
+    }
 }

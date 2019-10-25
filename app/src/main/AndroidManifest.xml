@@ -23,7 +23,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/MyAppTheme"
-        tools:replace="android:icon">
+        tools:replace="android:name">
         <service android:name="com.xuexiang.xupdate.service.DownloadService" />
 
         <provider

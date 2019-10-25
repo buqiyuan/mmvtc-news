@@ -1,6 +1,7 @@
 package com.tab.mmvtc_news.jwc;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import com.tab.mmvtc_news.R;
+import com.tab.mmvtc_news.activity.MainActivity;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
 
@@ -158,6 +160,14 @@ public class ChangePasswordActivity extends Activity {
             changeFail("旧密码不正确");
         } else if (content.indexOf("修改成功") != -1) {
             changeFail("修改成功");
+            SharedPreferences sp = getSharedPreferences("user", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.remove("password");
+            editor.commit();
+            Intent intent = new Intent(ChangePasswordActivity.this,
+                    LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 
