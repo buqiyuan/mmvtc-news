@@ -18,13 +18,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blog.www.guideview.Guide;
+import com.blog.www.guideview.GuideBuilder;
 import com.tab.mmvtc_news.R;
+import com.tab.mmvtc_news.activity.MainActivity;
 import com.tab.mmvtc_news.adapter.MyBaseAdapter;
+import com.tab.mmvtc_news.component.SimpleComponent;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
 import com.tab.mmvtc_news.utils.LogUtil;
+import com.tab.mmvtc_news.utils.SharedPreferencesUtil;
 import com.tab.mmvtc_news.views.NoScrollListView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -118,11 +124,8 @@ public class CourseActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();//返回
-                }
+            toolbar.setNavigationOnClickListener(v -> {
+                finish();//返回
             });
             new Thread(runnable).start();
         }
@@ -428,6 +431,7 @@ public class CourseActivity extends AppCompatActivity {
             Message msg = new Message();
             msg.what = 1;
             mHandler.sendMessage(msg);
+
             LogUtil.e("courseList", courseList.toString());
         }
     }

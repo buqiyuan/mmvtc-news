@@ -5,17 +5,24 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.blog.www.guideview.Guide;
+import com.blog.www.guideview.GuideBuilder;
 import com.tab.mmvtc_news.R;
-import com.tab.mmvtc_news.adapter.MyViewpageAdapter;
-import com.tab.mmvtc_news.utils.GlideImageLoader;
 import com.tab.mmvtc_news.activity.MainActivity;
+import com.tab.mmvtc_news.adapter.MyViewpageAdapter;
+import com.tab.mmvtc_news.component.LottieComponent;
+import com.tab.mmvtc_news.utils.GlideImageLoader;
 import com.tab.mmvtc_news.utils.LogUtil;
 import com.youth.banner.Banner;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -51,8 +58,42 @@ public class HomeFragment extends Fragment {
         //banner设置方法全部调用完毕时最后调用
         return view;
     }
+    /**
+     *
+     * 从发布者那里得到eventbus传送过来的数据
+     *
+     * 加上@Subscribe以防报错：its super classes have no public methods with the @Subscribe annotation
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(MainActivity.MessageEvent event) {
+        Log.i("我收到信息了：",event.message);
+        showGuideView();
+    }
 
+    private void showGuideView() {
+        final GuideBuilder builder1 = new GuideBuilder();
+        builder1.setTargetView(mViewPager)
+                .setAlpha(150)
+                .setHighTargetCorner(20)
+                .setHighTargetPadding(10)
+                .setExitAnimationId(android.R.anim.fade_out);
+        builder1.setOnVisibilityChangedListener(new GuideBuilder.OnVisibilityChangedListener() {
+            @Override
+            public void onShown() {
+            }
 
+            @Override
+            public void onDismiss() {
+            }
+        });
+
+        builder1.addComponent(new LottieComponent());
+        Guide guide = builder1.createGuide();
+        guide.setShouldCheckLocInWindow(false);
+        guide.show(getActivity());
+    }
     private void initViews() {
         tabLayout = (TabLayout) view.findViewById(R.id.tl);
         mViewPager = (ViewPager) view.findViewById(R.id.vp);
@@ -108,5 +149,16 @@ public class HomeFragment extends Fragment {
         mViewPager.setOffscreenPageLimit(6);
         mViewPager.setAdapter(myViewpageAdapter);
         tabLayout.setupWithViewPager(mViewPager);
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 }

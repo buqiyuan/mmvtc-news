@@ -55,6 +55,7 @@
         <activity android:name=".activity.WebViewActivity" />
         <activity android:name=".jwc.CourseDetail" />
         <activity android:name=".activity.BookDetailActivity" />
+        <activity android:name=".activity.WelcomeGuideActivity"/>
     </application>
 
 </manifest>

@@ -171,3 +171,28 @@
 -dontwarn com.sina.**
 -dontwarn com.mob.**
 -dontwarn **.R$*
+
+
+# RxJava RxAndroid
+-dontwarn sun.misc.**
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+    long producerIndex;
+    long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+    rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
+
+-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+# EventBus 3.0
+-keepclassmembers class ** {
+    public void onEvent*(**);
+}
+
+# EventBus 3.0 annotation
+-keepclassmembers class * {
+    @de.greenrobot.event.Subscribe <methods>;
+}

@@ -7,20 +7,28 @@
     android:fitsSystemWindows="true"
     tools:context="com.tab.mmvtc_news.activity.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/MyAppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:title="@string/title_activity_main"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/MyAppTheme.PopupOverlay" />
+       <android.support.design.widget.AppBarLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:theme="@style/MyAppTheme.AppBarOverlay">
+           <RelativeLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content">
+           <ImageView
+               android:id="@+id/header_imgbtn"
+               android:layout_width="60dp"
+               android:layout_height="?attr/actionBarSize"/>
+           <android.support.v7.widget.Toolbar
+               android:id="@+id/toolbar"
+               android:layout_width="match_parent"
+               android:layout_height="?attr/actionBarSize"
+               android:title="@string/title_activity_main"
+               android:background="?attr/colorPrimary"
+               app:popupTheme="@style/MyAppTheme.PopupOverlay" />
+           </RelativeLayout>
 
-    </android.support.design.widget.AppBarLayout>
+       </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_main" />
 

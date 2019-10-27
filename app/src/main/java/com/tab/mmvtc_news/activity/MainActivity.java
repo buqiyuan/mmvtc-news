@@ -29,6 +29,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.blog.www.guideview.Guide;
+import com.blog.www.guideview.GuideBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.MultiTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -38,26 +40,28 @@ import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
 import com.tab.mmvtc_news.R;
 import com.tab.mmvtc_news.adapter.FragmentAdapter;
 import com.tab.mmvtc_news.adapter.MyViewpageAdapter;
+import com.tab.mmvtc_news.component.SimpleComponent;
 import com.tab.mmvtc_news.fragment.AboutSchoolFragment;
 import com.tab.mmvtc_news.fragment.DepartmentFragment;
 import com.tab.mmvtc_news.fragment.HomeFragment;
 import com.tab.mmvtc_news.fragment.LibraryFragment;
+import com.tab.mmvtc_news.fragment.MoreFragment;
 import com.tab.mmvtc_news.jwc.ChangePasswordActivity;
 import com.tab.mmvtc_news.jwc.CourseActivity;
 import com.tab.mmvtc_news.jwc.LoginActivity;
 import com.tab.mmvtc_news.jwc.MeActivity;
-import com.tab.mmvtc_news.fragment.MoreFragment;
 import com.tab.mmvtc_news.jwc.ScoreActivity;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.callback.BitmapCallback;
 import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
-import com.tab.mmvtc_news.utils.CProgressDialogUtils;
 import com.tab.mmvtc_news.utils.LogUtil;
+import com.tab.mmvtc_news.utils.SharedPreferencesUtil;
 import com.xuexiang.xupdate.XUpdate;
 import com.xuexiang.xupdate.proxy.impl.DefaultUpdateChecker;
 import com.xuexiang.xupdate.utils.UpdateUtils;
 import com.youth.banner.Banner;
 
+import org.greenrobot.eventbus.EventBus;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -139,66 +143,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         itemsName = getResources().getStringArray(R.array.mainItemsName);
-// 自动检查更新
-        XUpdate.newBuild(this)
-                .updateUrl(mUpdateUrl)
-                .updateChecker(new DefaultUpdateChecker() {
-                    @Override
-                    public void onBeforeCheck() {
-                        super.onBeforeCheck();
-                        SharedPreferences sp = getSharedPreferences("user", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putBoolean("isAutoUpdate", true);
-                        editor.commit();
-                    }
-                    @Override
-                    public void onAfterCheck() {
-                        super.onAfterCheck();
-                    }
-                })
-                .themeColor(getResources().getColor(R.color.update_theme_color))
-                .topResId(R.mipmap.bg_update_top)
-                .supportBackgroundUpdate(true)
-                .update();
+
 //获取学院首页数据
         getIndexData();
-        //banner设置方法全部调用完毕时最后调用
-    }
-
-    private void getIndexData() {
-        OkHttpUtils
-                .get()
-                .url("https://www.mmvtc.cn/templet/default/index.jsp")
-                .build()
-                .connTimeOut(10000)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        ToastUtils.show("获取数据失败！正在重连...");
-                        getIndexData();
-                    }
-
-                    @Override
-                    public void onResponse(String response, int id) {
-                        doc = Jsoup.parse(response);
-                        Elements imgs = doc.select("img[src^=slider]");
-                        for (Element ele : imgs) {
-                            Log.e("images", ele.attr("abs:src"));
-                            images.add(ele.attr("abs:src"));
-                        }
-                        newsLink = doc.select(".col-md-6 .news .title .pull-right a").attr("href");
-                        noticeLink = doc.select(".col-md-4 .news .title .pull-right a").attr("href");
-                        xueshuLink = "https://www.mmvtc.cn/templet/xskyw/ShowClass.jsp?id=2002";
-                        xibuLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(2) .more .pull-right a").attr("href");
-                        gaozhuanLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(3) .more .pull-right a").attr("href");
-                        weekUrl = doc.select(".left-vertical-menu .list-unstyled li:nth-of-type(1) a").attr("href");
-                        Log.e("weekUrl",weekUrl);
-                        initViews();
-                        initDatas();
-                        initEvents();
-                        getAvatar();
-                    }
-                });
     }
 
     private void initViews() {
@@ -248,6 +195,15 @@ public class MainActivity extends AppCompatActivity
         pager.setCurrentItem(0);
         pager.addOnPageChangeListener(this);
         fragmentManager = getSupportFragmentManager();
+
+        boolean isFirstOpen = SharedPreferencesUtil.getBoolean(this, SharedPreferencesUtil.FIRST_USE, true);
+        // 如果是第一次进入到主界面，则先开始新手引导页
+        if (isFirstOpen) {
+            showGuideView();
+        } else {
+//            自动检查更新版本
+            autoUpdateVersion();
+        }
     }
 
     private void initDatas() {
@@ -319,6 +275,99 @@ public class MainActivity extends AppCompatActivity
             tab_bottom.addTab(tab_bottom.newTab().setIcon(typedArray.getResourceId(i, 0)).setTag(i));
         }
         typedArray.recycle();
+    }
+
+    public static class MessageEvent {
+        public final String message;
+
+        public MessageEvent(String message) {
+            this.message = message;
+        }
+    }
+
+    private void showGuideView() {
+        GuideBuilder builder = new GuideBuilder();
+        builder.setTargetView(findViewById(R.id.header_imgbtn))
+                .setAlpha(150)
+                .setHighTargetCorner(20)
+                .setHighTargetPadding(10);
+        builder.setOnVisibilityChangedListener(new GuideBuilder.OnVisibilityChangedListener() {
+            @Override
+            public void onShown() {
+            }
+
+            @Override
+            public void onDismiss() {
+                EventBus.getDefault().post(new MessageEvent("Hello   everyone!"));
+                // 如果切换到后台，就设置下次不进入新手引导页
+                SharedPreferencesUtil.putBoolean(MainActivity.this, SharedPreferencesUtil.FIRST_USE, false);
+            }
+        });
+
+        builder.addComponent(new SimpleComponent());
+        Guide guide = builder.createGuide();
+        guide.show(MainActivity.this);
+    }
+
+    private void getIndexData() {
+        OkHttpUtils
+                .get()
+                .url("https://www.mmvtc.cn/templet/default/index.jsp")
+                .build()
+                .connTimeOut(10000)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        ToastUtils.show("获取数据失败！正在重连...");
+                        getIndexData();
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        doc = Jsoup.parse(response);
+                        Elements imgs = doc.select("img[src^=slider]");
+                        for (Element ele : imgs) {
+                            Log.e("images", ele.attr("abs:src"));
+                            images.add(ele.attr("abs:src"));
+                        }
+                        newsLink = doc.select(".col-md-6 .news .title .pull-right a").attr("href");
+                        noticeLink = doc.select(".col-md-4 .news .title .pull-right a").attr("href");
+                        xueshuLink = "https://www.mmvtc.cn/templet/xskyw/ShowClass.jsp?id=2002";
+                        xibuLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(2) .more .pull-right a").attr("href");
+                        gaozhuanLink = doc.select(".col-md-6 .tabs .tab-content:nth-of-type(3) .more .pull-right a").attr("href");
+                        weekUrl = doc.select(".left-vertical-menu .list-unstyled li:nth-of-type(1) a").attr("href");
+                        Log.e("weekUrl", weekUrl);
+                        initViews();
+                        initDatas();
+                        initEvents();
+                        getAvatar();
+                    }
+                });
+    }
+
+    private void autoUpdateVersion() {
+        // 自动检查更新
+        XUpdate.newBuild(this)
+                .updateUrl(mUpdateUrl)
+                .updateChecker(new DefaultUpdateChecker() {
+                    @Override
+                    public void onBeforeCheck() {
+                        super.onBeforeCheck();
+                        SharedPreferences sp = getSharedPreferences("user", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sp.edit();
+                        editor.putBoolean("isAutoUpdate", true);
+                        editor.commit();
+                    }
+
+                    @Override
+                    public void onAfterCheck() {
+                        super.onAfterCheck();
+                    }
+                })
+                .themeColor(getResources().getColor(R.color.update_theme_color))
+                .topResId(R.mipmap.bg_update_top)
+                .supportBackgroundUpdate(true)
+                .update();
     }
 
     private void getAvatar() {

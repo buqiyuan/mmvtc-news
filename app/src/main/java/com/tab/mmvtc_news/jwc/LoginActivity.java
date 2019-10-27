@@ -129,19 +129,9 @@ public class LoginActivity extends Activity implements OnClickListener {
         //播放
         videoview.start();
         //循环播放
-        videoview.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                videoview.start();
-            }
-        });
+        videoview.setOnCompletionListener(mediaPlayer -> mediaPlayer.start());
         //设置为静音
-        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                mediaPlayer.setVolume(0f, 0f);
-            }
-        });
+        videoview.setOnPreparedListener(mediaPlayer -> mediaPlayer.setVolume(0f, 0f));
     }
 
     //返回重启加载
@@ -172,7 +162,7 @@ public class LoginActivity extends Activity implements OnClickListener {
         name = et_name.getText().toString().trim();
         password = et_password.getText().toString().trim();
         vertify = et_vertify.getText().toString().trim();
-
+        et_vertify.setText("");
         if (name.equals("") || password.equals("")) {
             errorDialog.setTitleText("学号或者密码不能为空").show();
             return;

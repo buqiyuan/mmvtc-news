@@ -166,6 +166,7 @@ public class ChangePasswordActivity extends Activity {
             editor.commit();
             Intent intent = new Intent(ChangePasswordActivity.this,
                     LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         }
