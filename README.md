@@ -6,27 +6,42 @@
 ## 运行效果：
 - 教务处登录
 
-![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/教务处登录.jpg "教务处登录.jpg")   
+  <img src="https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/教务处登录.jpg" width="280" height="475" style="max-width:100%;">
+
+![]( "教务处登录.jpg")   
 
 - 学院首页
 
-![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/学院首页.jpg "学院首页.jpg")   
+  
+
+<img src="https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/学院首页.jpg" width="280" height="475" style="max-width:100%;">
+
+   
+
 - 系部新闻
 
-![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/系部新闻.jpg "系部新闻.jpg")   
+  
+
+<img src="https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/系部新闻.jpg" width="280" height="475" style="max-width:100%;">
+
+   
 
 - 图书馆
 
-![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/图书馆.jpg "图书馆.jpg")
+<img src="https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/图书馆.jpg" width="280" height="475" style="max-width:100%;">
 
 - 学院概况
 
-![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/学院概况.jpg "学院概况.jpg")   
+<img src="https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/学校概况.jpg" width="280" height="475" style="max-width:100%;">
 
 - 更多
 
-![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/更多.jpg "更多.jpg")   
+<img src="https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/更多.jpg" width="280" height="475" style="max-width:100%;">
+
+   
 
 - 课程表
 
-![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/课程表.jpg "课程表.jpg")   
+<img src="https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/课程表.jpg" width="280" height="475" style="max-width:100%;">
+
+   
