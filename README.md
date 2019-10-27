@@ -4,25 +4,29 @@
 - 主要功能有登录正方教务管理系统查询个人成绩、课表等信息，还有茂职院官网首页新闻、图书馆等信息。
 
 ## 运行效果：
+- 教务处登录
+
+![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/教务处登录.jpg "教务处登录.jpg")   
+
 - 学院首页
 
-![](https://github.com/buqiyuan/mmvtc_news/blob/master/example/学院首页.jpg "学院首页.jpg")   
+![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/学院首页.jpg "学院首页.jpg")   
 - 系部新闻
 
-![](https://github.com/buqiyuan/mmvtc_news/blob/master/example/系部新闻.jpg "系部新闻.jpg")   
+![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/系部新闻.jpg "系部新闻.jpg")   
 
 - 图书馆
 
-![](https://github.com/buqiyuan/mmvtc_news/blob/master/example/图书馆.jpg "图书馆.jpg") 
+![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/图书馆.jpg "图书馆.jpg")
 
 - 学院概况
 
-![](https://github.com/buqiyuan/mmvtc_news/blob/master/example/学院概况.jpg "学院概况.jpg")   
+![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/学院概况.jpg "学院概况.jpg")   
 
 - 更多
 
-![](https://github.com/buqiyuan/mmvtc_news/blob/master/example/更多.jpg "更多.jpg")   
+![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/更多.jpg "更多.jpg")   
 
 - 课程表
 
-![](https://github.com/buqiyuan/mmvtc_news/blob/master/example/课程表.jpg "课程表.jpg")   
+![](https://raw.githubusercontent.com/buqiyuan/mmvtc-news/master/example/课程表.jpg "课程表.jpg")   
