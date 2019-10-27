@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="20dp"
     android:paddingRight="20dp"
-    android:background="@color/orange"
+    android:background="#19CAAD"
     android:orientation="vertical">
 
     <TextView

@@ -367,11 +367,27 @@ public class CourseActivity extends AppCompatActivity {
                         LogUtil.e("第几周", tempStr);
                         Pattern pattern = Pattern.compile("第\\d周");
                         Matcher matcher = pattern.matcher(tempStr);
+
                         if (matcher.find()) {
 
                             LogUtil.e("匹配结果", matcher.group());
+                            long time = System.currentTimeMillis();
+                            Date date = new Date(time);
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 EEEE");
+                            format = new SimpleDateFormat("EEEE");
 
-                            tv_title.setText(tv_title.getText() + "(" + matcher.group() + ")");
+//                            如果是星期日则将周数减减
+                            if (String.valueOf(format.format(date)).equals("星期日")) {
+                                String regEx = "[^0-9]";
+                                Pattern p = Pattern.compile(regEx);
+                                Matcher m = p.matcher(matcher.group());
+                                Log.e("今天是周日",m.replaceAll("").trim());
+
+                                int weekNumber = Integer.parseInt(m.replaceAll("").trim());
+                                tv_title.setText(tv_title.getText() + "(第" + (--weekNumber) + "周)");
+                            } else {
+                                tv_title.setText(tv_title.getText() + "(" + matcher.group() + ")");
+                            }
                         }
                     }
                 });
