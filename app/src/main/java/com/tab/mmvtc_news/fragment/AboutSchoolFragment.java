@@ -28,7 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class AboutSchoolFragment extends Fragment {
     private Toolbar mToolbar;
     private TabLayout tabLayout;

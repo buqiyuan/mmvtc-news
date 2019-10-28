@@ -13,7 +13,9 @@ import com.tab.mmvtc_news.adapter.MyViewpageAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class LibraryFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPager mViewPager;

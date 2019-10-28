@@ -42,11 +42,7 @@ import java.util.Map;
 import okhttp3.Call;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
- * Use the {@link ContentFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Created by 卜启缘 on 2019/10/8.
  */
 public class ContentFragment extends Fragment {
 

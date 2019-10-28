@@ -4,7 +4,9 @@ import android.support.v7.widget.RecyclerView;
         import android.util.SparseArray;
         import android.view.View;
 
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class MySimpleHolder extends RecyclerView.ViewHolder {
 
     private final SparseArray<View> mViews;

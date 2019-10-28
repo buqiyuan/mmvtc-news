@@ -23,7 +23,9 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Map;
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class TimeTableActive extends AppCompatActivity {
     private WebView webView;
     private LinearLayout ll_load;

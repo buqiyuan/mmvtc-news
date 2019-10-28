@@ -23,6 +23,10 @@
     <item android:title="其他">
         <menu>
             <item
+                android:id="@+id/nav_bind_account"
+                android:icon="@drawable/icon_bind_account"
+                android:title="绑定第三方账号" />
+            <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/about"
                 android:title="关于" />

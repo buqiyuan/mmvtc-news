@@ -6,7 +6,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.List;
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class MyViewpageAdapter extends FragmentPagerAdapter {
     private List<String> titleLists;
     private List<Fragment> fragments;

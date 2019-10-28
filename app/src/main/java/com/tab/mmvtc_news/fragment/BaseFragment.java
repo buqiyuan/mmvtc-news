@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import com.tab.mmvtc_news.views.BaseView;
 
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public abstract class BaseFragment extends Fragment implements BaseView {
     private ProgressDialog loadingDialog;
     protected TextView title;

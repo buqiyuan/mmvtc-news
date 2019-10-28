@@ -1,13 +1,9 @@
 package com.tab.mmvtc_news;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
@@ -19,22 +15,16 @@ import com.tab.mmvtc_news.okhttpUtil.https.HttpsUtils;
 import com.tab.mmvtc_news.okhttpUtil.log.LoggerInterceptor;
 import com.tab.mmvtc_news.utils.OKHttpUpdateHttpService;
 import com.xuexiang.xupdate.XUpdate;
-import com.xuexiang.xupdate.entity.DownloadEntity;
 import com.xuexiang.xupdate.entity.UpdateError;
-import com.xuexiang.xupdate.listener.OnInstallListener;
 import com.xuexiang.xupdate.listener.OnUpdateFailureListener;
-import com.xuexiang.xupdate.proxy.IUpdateChecker;
-import com.xuexiang.xupdate.proxy.IUpdateProxy;
 import com.xuexiang.xupdate.utils.UpdateUtils;
 
-import java.io.File;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
+import cn.bmob.v3.Bmob;
 import okhttp3.OkHttpClient;
 
 import static com.xuexiang.xupdate.entity.UpdateError.ERROR.CHECK_NO_NEW_VERSION;
@@ -65,7 +55,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        //第一：默认初始化
+        Bmob.initialize(this, "5178f13fc41ca9e649d9c12eee9a6d68");
         ToastUtils.init(this);
 
         ClearableCookieJar cookieJar1 = new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(getApplicationContext()));

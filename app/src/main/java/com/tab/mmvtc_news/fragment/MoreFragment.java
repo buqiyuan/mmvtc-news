@@ -12,6 +12,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
+import com.tab.mmvtc_news.LostAndFound.LostAndFoundActivity;
+import com.tab.mmvtc_news.LostAndFound.WelcomeActivity;
 import com.tab.mmvtc_news.R;
 import com.tab.mmvtc_news.activity.TimeTableActive;
 import com.tab.mmvtc_news.activity.WebViewActivity;
@@ -20,9 +22,12 @@ import com.tab.mmvtc_news.views.CustomVideoView;
 import com.xuexiang.xupdate.XUpdate;
 import com.xuexiang.xupdate.proxy.impl.DefaultUpdateChecker;
 
+import cn.bmob.v3.Bmob;
 import cn.sharesdk.onekeyshare.OnekeyShare;
 
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class MoreFragment extends BaseFragment implements View.OnClickListener {
     private TextView tv_timetable;
     private TextView tvPanorama;
@@ -35,6 +40,7 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
     //    private String mUpdateUrl = "https://raw.githubusercontent.com/xuexiangjys/XUpdate/master/jsonapi/update_test.json";
     private String mUpdateUrl = "https://buqiyuan.xyz/my-demo/app_update.json";
     private TextView tvShare;
+    private TextView tvLostFound;
 
     @Override
     protected String getTitleName() {
@@ -60,6 +66,8 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
         tvPanorama.setOnClickListener(this);
         tvGuide = (TextView) view.findViewById(R.id.tv_guide);
         tvGuide.setOnClickListener(this);
+        tvLostFound = (TextView) view.findViewById(R.id.tv_lost_found);
+        tvLostFound.setOnClickListener(this);
         tvAbout = (TextView) view.findViewById(R.id.tv_about);
         tvAbout.setOnClickListener(this);
         tvUpdate = (TextView) view.findViewById(R.id.tv_update);
@@ -121,6 +129,10 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
 //            打开作息时间表
             Intent intent = new Intent(getActivity(), TimeTableActive.class);
             startActivity(intent);
+        } else if (viewId == R.id.tv_lost_found) {
+//            打开失物招领
+            Intent intent = new Intent(getActivity(), WelcomeActivity.class);
+            startActivity(intent);
         } else if (viewId == R.id.tv_panorama) {
             //  打开校园全景
             Intent intent = new Intent(getActivity(), WebViewActivity.class);
@@ -173,13 +185,14 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
             // title标题，微信、QQ和QQ空间等平台使用
             oks.setTitle("分享");
             // titleUrl QQ和QQ空间跳转链接
-            oks.setTitleUrl("下载链接：https://buqiyuan.xyz/my-demo/mmvtc_news.apk");
+            oks.setTitleUrl("https://buqiyuan.xyz/my-demo/mmvtc_news.apk");
             // text是分享文本，所有平台都需要这个字段
-            oks.setText("茂职校园信息APP");
+            oks.setText("茂职校园信息APP\n——最好的掌上校园APP");
             // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
-            oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+//            oks.setImagePath("/sdcard/test.jpg");//确保SDcard下面存在此张图片
+            oks.setImageUrl("https://s2.ax1x.com/2019/10/28/K65pv9.png");//确保SDcard下面存在此张图片
             // url在微信、微博，Facebook等平台中使用
-            oks.setUrl("下载链接：https://buqiyuan.xyz/my-demo/mmvtc_news.apk");
+            oks.setUrl("https://buqiyuan.xyz/my-demo/mmvtc_news.apk");
             // comment是我对这条分享的评论，仅在人人网使用
             oks.setComment("茂职校园信息APP");
             // 启动分享GUI

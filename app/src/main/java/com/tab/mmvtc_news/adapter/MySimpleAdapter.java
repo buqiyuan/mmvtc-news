@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public abstract class MySimpleAdapter<T> extends RecyclerView.Adapter<MySimpleHolder> {
 
     private Context mContext;

@@ -36,11 +36,16 @@ import org.jsoup.select.Elements;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.SaveListener;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 
 //import cn.pedant.SweetAlert.SweetAlertDialog;
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class LoginActivity extends Activity implements OnClickListener {
     private EditText et_name, et_password, et_vertify;
     private ImageView iv_vertify;
@@ -235,6 +240,7 @@ public class LoginActivity extends Activity implements OnClickListener {
             errorDialog.setTitleText("用户名不存在或未按照要求参加教学活动").show();
             refreshVertify();
         } else if (content.indexOf("欢迎您") != -1) {
+            bmobRegisterAccount();
             successDialog.setTitleText("登陆成功")
                     .show();
             new Handler().postDelayed(new Runnable() {
@@ -283,7 +289,24 @@ public class LoginActivity extends Activity implements OnClickListener {
         }
     }
 
-
+    private void bmobRegisterAccount() {
+        BmobUser bmobUser = new BmobUser();
+        bmobUser.setUsername(name);
+        bmobUser.setPassword(password);
+        bmobUser.signUp(new SaveListener<BmobUser>() {
+            @Override
+            public void done(BmobUser bmobUser, BmobException e) {
+                if (e == null) {
+//                    ToastUtils.show("恭喜，注册账号成功");
+                    Log.e("bmob success","恭喜，注册账号成功");
+                    finish();
+                } else {
+//                    ToastUtils.show("注册失败：" + e.getMessage());
+                    Log.e("register fail:" , e.getMessage());
+                }
+            }
+        });
+    }
     private void getVertify() {
         OkHttpUtils
                 .get()//

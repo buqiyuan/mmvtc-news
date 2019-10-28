@@ -32,7 +32,9 @@ import com.tab.mmvtc_news.utils.SharedPreferencesUtil;
 
 import static android.media.CamcorderProfile.get;
 
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class MyBaseAdapter extends BaseAdapter {
 private int showTimes = 0;
     private List<Map<String, String>> list;

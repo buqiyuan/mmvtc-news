@@ -20,7 +20,9 @@ import com.youth.banner.Banner;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class DepartmentFragment extends Fragment {
     private Toolbar mToolbar;
     private TabLayout tabLayout;

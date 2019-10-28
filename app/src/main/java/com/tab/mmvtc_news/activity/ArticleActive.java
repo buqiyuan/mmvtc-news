@@ -1,8 +1,6 @@
 package com.tab.mmvtc_news.activity;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,18 +14,14 @@ import com.hjq.toast.ToastUtils;
 import com.tab.mmvtc_news.R;
 import com.tab.mmvtc_news.okhttpUtil.OkHttpUtils;
 import com.tab.mmvtc_news.okhttpUtil.callback.StringCallback;
-import com.tab.mmvtc_news.utils.LogUtil;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.Map;
-
 import okhttp3.Call;
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class ArticleActive extends AppCompatActivity {
     private WebView webView;
     private LinearLayout ll_load;
@@ -105,7 +99,7 @@ public class ArticleActive extends AppCompatActivity {
                             String subTitle = doc.select(".new .content h4").toString();
                             doc.select(".new .news_content span").attr("style", "font-size:18px;color:#666");
                             String body = doc.select(".new .news_content").toString();
-                            html = title + subTitle + body;
+                            html = title + "<br>" + subTitle + body;
                         } else if (href.indexOf("hxgcx") != -1) {
                             // 高职高专标题
                             doc.select("#container .frame h1").attr("style", "font-size:20px;color:#666;text-align:center;font-weight:800;");
@@ -115,7 +109,7 @@ public class ArticleActive extends AppCompatActivity {
                             doc.select("#container .content p").attr("style", "font-size:18px;color:#666;text-indent: 36px;");
                             doc.select("#container .content span").attr("style", "font-size:18px;color:#666");
                             String body = doc.select("#container .content").toString();
-                            html = title + subTitle + body;
+                            html = title + "<br>" + subTitle + body;
                         } else if (href.indexOf("tmgcx") != -1) {
                             // 土木系标题
                             doc.select(".content #title").attr("style", "font-size:20px;color:#666;text-align:center;font-weight:800;");
@@ -125,7 +119,7 @@ public class ArticleActive extends AppCompatActivity {
                             doc.select(".content #xiangxi p").attr("style", "font-size:18px;color:#666;text-indent: 36px;");
                             doc.select(".content #xiangxi span").attr("style", "font-size:18px;color:#666");
                             String body = doc.select(".content #xiangxi").toString();
-                            html = title + subTitle + body;
+                            html = title + "<br>" + subTitle + body;
                         } else if (href.indexOf("zzb") != -1) {
                             // 中专部标题
                             doc.select("#article_container #tt").attr("style", "font-size:20px;color:#666;text-align:center;font-weight:800;");
@@ -142,7 +136,7 @@ public class ArticleActive extends AppCompatActivity {
                             doc.select("#content_wenzhang .news_content p").attr("style", "font-size:18px;color:#666;text-indent: 36px;");
                             doc.select("#content_wenzhang .news_content span").attr("style", "font-size:18px;color:#666");
                             String body = doc.select("#content_wenzhang .news_content").toString();
-                            html = title + subTitle + body;
+                            html = title + "<br>" + subTitle + body;
                         } else if (href.indexOf("jdxxx") != -1) {
                             // 机电系标题
                             doc.select(".articleMain .articleTitle").attr("style", "font-size:20px;color:#666;text-align:center;font-weight:800;");
@@ -151,7 +145,7 @@ public class ArticleActive extends AppCompatActivity {
                             doc.select(".articleMain .articleContent p").attr("style", "font-size:18px;color:#666;text-indent: 36px;");
                             doc.select(".articleMain .articleContent span").attr("style", "font-size:18px;color:#666");
                             String body = doc.select(".articleMain .articleContent").toString();
-                            html = title + subTitle + body;
+                            html = title + "<br>" + subTitle + body;
                         } else if (href.indexOf("jsjgcx") != -1) {
                             // 计算系标题
                             doc.select(".main .newsTitle").attr("style", "font-size:20px;color:#666;text-align:center;font-weight:800;");
@@ -168,7 +162,7 @@ public class ArticleActive extends AppCompatActivity {
                             doc.select("#list-you #news_content p").attr("style", "font-size:18px;color:#666;text-indent: 36px;");
                             doc.select("#list-you #news_content span").attr("style", "font-size:18px;color:#666");
                             String body = doc.select("#list-you #news_content").toString();
-                            html = title + subTitle + body;
+                            html = title + "<br>" + subTitle + body;
                         } else {
                             // 文章标题
                             String title = doc.select(".job__top__right .mt-20 .ali-ol-experiment-title")
@@ -181,7 +175,7 @@ public class ArticleActive extends AppCompatActivity {
                             doc.select(".job__top__right .ali-ol-experiment-content span").attr("style", "font-size:18px!important;color:#666;");
                             //文章主题内容
                             String body = doc.select(".job__top__right .ali-ol-experiment-content").attr("style", "font-size:18px!important;color:#666;").toString();
-                            html = title + subTitle + body;
+                            html = title + "<br>" + subTitle + body;
                         }
                         ll_load.setVisibility(View.GONE);
                         webView.loadDataWithBaseURL(null, html, "text/html", "utf-8", null);

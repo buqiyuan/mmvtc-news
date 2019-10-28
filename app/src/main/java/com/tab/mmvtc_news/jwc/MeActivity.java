@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 import okhttp3.Call;
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class MeActivity extends AppCompatActivity {
 
     private String infoUrl;

@@ -9,7 +9,9 @@ import android.widget.Toast;
 
 import com.blog.www.guideview.Component;
 import com.tab.mmvtc_news.R;
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class MutiComponent implements Component {
 
     @Override

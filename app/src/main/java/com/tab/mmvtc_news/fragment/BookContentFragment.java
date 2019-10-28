@@ -32,11 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * to handle interaction events.
- * Use the {@link BookContentFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * Created by 卜启缘 on 2019/10/8.
  */
 public class BookContentFragment extends Fragment {
 

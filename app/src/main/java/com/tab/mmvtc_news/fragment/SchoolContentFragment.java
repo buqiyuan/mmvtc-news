@@ -18,7 +18,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import okhttp3.Call;
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class SchoolContentFragment extends Fragment {
     private static final String LINK = "link";
     private View loadMoreView;

@@ -74,13 +74,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.bmob.v3.Bmob;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import okhttp3.Call;
 
 //import cn.pedant.SweetAlert.SweetAlertDialog;
-
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, TabLayout.OnTabSelectedListener {
@@ -142,6 +145,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         itemsName = getResources().getStringArray(R.array.mainItemsName);
 
 //获取学院首页数据
@@ -635,6 +639,10 @@ public class MainActivity extends AppCompatActivity
             } else if (id == R.id.nav_manage) {
 //            打开修改密码
                 Intent intent = new Intent(MainActivity.this, ChangePasswordActivity.class);
+                startActivity(intent);
+            } else if (id == R.id.nav_bind_account) {
+//            打开第三方登录授权
+                Intent intent = new Intent(MainActivity.this, SdkTagsMainActivity.class);
                 startActivity(intent);
             } else if (id == R.id.nav_send) {
 //            退出登录

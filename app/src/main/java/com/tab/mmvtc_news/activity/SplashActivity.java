@@ -22,9 +22,12 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
+/**
+ * Created by 卜启缘 on 2019/10/8.
+ */
 public class SplashActivity extends Activity {
     private CustomVideoView videoview;
 

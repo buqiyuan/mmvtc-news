@@ -60,6 +60,18 @@
                android:text="作息时间表"
                android:textSize="16sp" />
            <TextView
+               android:id="@+id/tv_lost_found"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="5dp"
+               android:background="@android:color/white"
+               android:drawableLeft="@drawable/lost_found"
+               android:drawablePadding="5dp"
+               android:gravity="center_vertical"
+               android:padding="12dp"
+               android:text="失物招领"
+               android:textSize="16sp" />
+           <TextView
                android:id="@+id/tv_about"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
