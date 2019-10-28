@@ -25,13 +25,13 @@ android {
         debug {
             keyAlias 'key0'
             keyPassword '19971130'
-            storeFile file('D:\\AndroidProjects\\mmvtc_news.jks')
+            storeFile file("mmvtc_news.jks")
             storePassword '19971130'
         }
         relealse {
             keyAlias 'key0'
             keyPassword '19971130'
-            storeFile file('D:\\AndroidProjects\\mmvtc_news.jks')
+            storeFile file('mmvtc_news.jks')
             storePassword '19971130'
         }
     }
