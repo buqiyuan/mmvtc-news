@@ -37,6 +37,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.hjq.toast.ToastUtils;
 import com.ontbee.legacyforks.cn.pedant.SweetAlert.SweetAlertDialog;
+import com.tab.mmvtc_news.MyLibrary.LibraryLoginActivity;
 import com.tab.mmvtc_news.R;
 import com.tab.mmvtc_news.adapter.FragmentAdapter;
 import com.tab.mmvtc_news.adapter.MyViewpageAdapter;
@@ -74,13 +75,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.bmob.v3.Bmob;
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropTransformation;
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 import okhttp3.Call;
 
 //import cn.pedant.SweetAlert.SweetAlertDialog;
+
 /**
  * Created by 卜启缘 on 2019/10/8.
  */
@@ -173,8 +174,9 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//      强制NavigationView停止在MainActivity.java中着色图标
+        navigationView.setItemIconTintList(null);
         navigationView.setNavigationItemSelectedListener(this);
 //        setSupportActionBar(mToolbar);
 
@@ -612,6 +614,14 @@ public class MainActivity extends AppCompatActivity
                             "github：https://github.com/buqiyuan")
                     .setCustomImage(R.drawable.about_avatar)
                     .show();
+            return true;
+        } else if (id == R.id.nav_myLibrary) {
+//            打开我的图书馆
+            Intent intent = new Intent(MainActivity.this, LibraryLoginActivity.class);
+//            Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
+//            intent.putExtra("title", "我的图书馆");
+//            intent.putExtra("url", "http://hwlibsys.mmvtc.cn:8080/reader/login.php");
+            startActivity(intent);
             return true;
         } else if (id == R.id.nav_state) {
 //            说明

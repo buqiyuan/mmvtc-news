@@ -2,31 +2,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#fff"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
-        android:background="#3c93ea">
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:navigationIcon="@drawable/back"
+        app:popupTheme="@style/toolbarMenuStyle"
+        app:theme="@style/toolbarTheme"
+        app:titleTextColor="@color/white">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:text="失物招领"
-            android:textColor="#fff"
-            android:textSize="16sp" />
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
-        <ImageView
-            android:id="@+id/iv_add"
+        <TextView
+            android:id="@+id/tv_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="12dp"
-            android:src="@drawable/add_lost" />
-    </RelativeLayout>
+            android:layout_gravity="right"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="我要发布"
+            android:textSize="18sp"
+            android:textColor="@color/white">
+        </TextView>
+
+    </android.support.v7.widget.Toolbar>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rl_recyclerview"

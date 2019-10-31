@@ -76,6 +76,8 @@
         <activity android:name=".LostAndFound.LostAndFoundActivity"/>
         <activity android:name=".LostAndFound.WelcomeActivity"/>
         <activity android:name=".LostAndFound.AddLostInformationActivity"/>
+        <activity android:name=".MyLibrary.LibraryLoginActivity"/>
+        <activity android:name=".MyLibrary.MyLibraryActivity"/>
     </application>
 
 </manifest>

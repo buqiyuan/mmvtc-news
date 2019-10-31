@@ -28,7 +28,7 @@
 // * Created by 卜启缘 on 2019/10/19.
 // */
 //
-//public class LoginActivity extends Activity implements View.OnClickListener {
+//public class LibraryLoginActivity extends Activity implements View.OnClickListener {
 //    private EditText accountLoginName;
 //    private EditText accountLoginPassword;
 //    private Button loginBtn;
@@ -86,7 +86,7 @@
 //                break;
 //            case R.id.register_account_btn:
 //                //跳转到注册界面
-//                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+//                Intent intent = new Intent(LibraryLoginActivity.this, RegisterActivity.class);
 //                startActivity(intent);
 //                break;
 //            default:
@@ -123,7 +123,7 @@
 //                    public void done(BmobUser bmobUser, BmobException e) {
 //                        if (e == null) {
 //                            //登录成功后进入主界面
-//                            Intent intent = new Intent(LoginActivity.this, LostAndFoundActivity.class);
+//                            Intent intent = new Intent(LibraryLoginActivity.this, LostAndFoundActivity.class);
 //                            startActivity(intent);
 //                            finish();
 //                        } else {
@@ -166,7 +166,7 @@
 //                                if (accountName.equals(list.getRegisterName())) {
 //                                    if (accountPassword.equals(list.getRegisterPassword())) {
 //                                        showToast("登录成功");
-//                                        Intent intent = new Intent(LoginActivity.this, LostAndFoundActivity.class);
+//                                        Intent intent = new Intent(LibraryLoginActivity.this, LostAndFoundActivity.class);
 //                                        startActivity(intent);
 //                                        finish();
 //                                        return;

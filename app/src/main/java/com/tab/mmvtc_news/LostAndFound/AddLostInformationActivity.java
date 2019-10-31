@@ -1,12 +1,11 @@
 package com.tab.mmvtc_news.LostAndFound;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -26,7 +25,7 @@ import cn.bmob.v3.listener.UpdateListener;
  * Created by 卜启缘 on 2019/10/28.
  */
 
-public class AddLostInformationActivity extends Activity implements View.OnClickListener {
+public class AddLostInformationActivity extends AppCompatActivity implements View.OnClickListener {
 
     private ImageView back;
     private ImageView add;
@@ -48,7 +47,6 @@ public class AddLostInformationActivity extends Activity implements View.OnClick
     }
 
     private void initView() {
-        back = (ImageView) findViewById(R.id.iv_back);
         add = (ImageView) findViewById(R.id.iv_add);
         title = (EditText) findViewById(R.id.et_title);
         phoneNum = (EditText) findViewById(R.id.et_phone_num);
@@ -66,16 +64,21 @@ public class AddLostInformationActivity extends Activity implements View.OnClick
     }
 
     private void initListener() {
-        back.setOnClickListener(this);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(v -> {
+            finish();//返回
+        });
         add.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_back:
-                finish();
-                break;
             case R.id.iv_add:
                 String password = getSharedPreferences("user", MODE_PRIVATE).getString("password","");
                 Log.e("password", password);

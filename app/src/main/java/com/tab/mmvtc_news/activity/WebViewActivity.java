@@ -100,12 +100,18 @@ public class WebViewActivity extends AppCompatActivity {
         if (title.indexOf("来校指南") != -1) {
             tv_title.setText(title);
             setGuideLayout(url);
+        }else if (title.indexOf("我的图书馆") != -1) {
+            tv_title.setText(title);
+            ll_load.setVisibility(View.GONE);
+            webView.loadUrl(url);
+//            setMyLibraryLayout(url);
         } else {
             tv_title.setText(title);
             webView.loadUrl(url);
         }
     }
 
+//设置来校指南布局
     private void setGuideLayout(final String url) {
         Map<String, String> headers = new HashMap<>();
         headers.put("Referer", "https://websites.mmvtc.cn/zsw/index.php?url=site/article&id=581&groups_id=13");
@@ -167,7 +173,37 @@ public class WebViewActivity extends AppCompatActivity {
 //            }
 //        }).start();
     }
+//    设置我的图书馆布局
+    private void setMyLibraryLayout(final String url) {
+        OkHttpUtils
+                .get()
+                .url(url)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e("加载失败", e.toString());
+                    }
 
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Document doc = Jsoup.parse(response,"http://hwlibsys.mmvtc.cn:8080/reader");
+                        String baseUrl = "http://hwlibsys.mmvtc.cn:8080/reader/";
+                        doc.select("#header_opac").attr("style", "display: none;");
+                        doc.select("script").attr("src", doc.select("script").attr("abs:src"));
+                        doc.select("link").attr("href", doc.select("link").attr("abs:href"));
+                        doc.select("a").attr("href",baseUrl +  doc.select("a").attr("href"));
+                        doc.select("form").attr("action",baseUrl +  doc.select("form").attr("action"));
+                        doc.select("body img").attr("src",baseUrl + doc.select("body img").attr("src"));
+                        doc.select("#menubar").attr("style", "display: none;");
+                        String top = doc.select(".content1_l").toString();
+                        String img = doc.select(".content2 img").toString();
+//                        String html = top + img;
+                        Log.e("htmlHHH", doc.select("#captcha_tips").toString());
+                        webView.loadDataWithBaseURL(null,  doc.toString(), "text/html", "utf-8", null);
+                    }
+                });
+    }
     private final MyHandler mHandler = new MyHandler(this);
 
     static class MyHandler extends Handler {

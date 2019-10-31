@@ -29,6 +29,8 @@ public class LibraryFragment extends Fragment {
     //fragments
     private List<Fragment> fragments = new ArrayList<>();
     View view;
+    private String library_opentime;
+    private String my_library;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,24 +52,29 @@ public class LibraryFragment extends Fragment {
         top_lendLink = "http://hwlibsys.mmvtc.cn:8080/top/top_lend.php";
         top_shelfLink = "http://hwlibsys.mmvtc.cn:8080/top/top_shelf.php";
         top_bookLink = "http://hwlibsys.mmvtc.cn:8080/top/top_book.php";
+        library_opentime = "https://www.mmvtc.cn/templet/tsg/ShowArticle.jsp?id=25184";
+//        my_library = "http://hwlibsys.mmvtc.cn:8080/reader/login.php";
         if (titles.isEmpty()) {
 
             titles.add("书目检索");
             titles.add("热门借阅");
             titles.add("热门收藏");
             titles.add("热门图书");
+            titles.add("开放时间");
 //            titles.add("我的图书");
 
             Fragment fragment1 = new SearchBookFragment();
             Fragment fragment2 = BookContentFragment.newInstance(top_lendLink);
             Fragment fragment3 = BookContentFragment.newInstance(top_shelfLink);
             Fragment fragment4 = BookContentFragment.newInstance(top_bookLink);
-//            Fragment fragment5 = new MyLibraryFragment();
+            Fragment fragment5 = LibraryContentFragment.newInstance(library_opentime);
+//            Fragment fragment6 = new MyLibraryActivity();
             fragments.add(fragment1);
             fragments.add(fragment2);
             fragments.add(fragment3);
             fragments.add(fragment4);
-//            fragments.add(fragment5);
+            fragments.add(fragment5);
+//            fragments.add(fragment6);
         }
     }
 

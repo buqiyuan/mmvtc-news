@@ -8,3 +8,5 @@
 /captures
 .externalNativeBuild
 /app/class_files.txt
+/app/release
+/app/build

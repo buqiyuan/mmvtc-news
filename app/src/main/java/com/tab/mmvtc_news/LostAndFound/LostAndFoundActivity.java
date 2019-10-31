@@ -1,42 +1,34 @@
 package com.tab.mmvtc_news.LostAndFound;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hjq.toast.ToastUtils;
 import com.tab.mmvtc_news.LostAndFound.adapter.LostAndFoundAdapter;
 import com.tab.mmvtc_news.LostAndFound.bean.LostInfomationReq;
 import com.tab.mmvtc_news.R;
 
 import java.util.List;
 
-import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
 /**
  * Created by 卜启缘 on 2019/10/19.
  */
 
-public class LostAndFoundActivity extends Activity implements View.OnClickListener, LostAndFoundAdapter.ItemClickListener {
+public class LostAndFoundActivity extends AppCompatActivity implements View.OnClickListener, LostAndFoundAdapter.ItemClickListener {
 
     private RecyclerView recyclerView;
-    private ImageView addBtn;
+    private TextView addBtn;
     private LostAndFoundAdapter lostAndFoundAdapter;
     private long exitTime = 0;
     private final static int REQUEST_CODE = 999;
@@ -55,11 +47,21 @@ public class LostAndFoundActivity extends Activity implements View.OnClickListen
 
     private void initView() {
         recyclerView = (RecyclerView) findViewById(R.id.rl_recyclerview);
-        addBtn = (ImageView) findViewById(R.id.iv_add);
+        addBtn = findViewById(R.id.tv_add);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         lostAndFoundAdapter = new LostAndFoundAdapter(LostAndFoundActivity.this);
         lostAndFoundAdapter.setLongClickListener(this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(v -> {
+            finish();//返回
+        });
     }
 
     private void initData() {
@@ -94,7 +96,7 @@ public class LostAndFoundActivity extends Activity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_add:
+            case R.id.tv_add:
                 Intent intent = new Intent(LostAndFoundActivity.this, AddLostInformationActivity.class);
                 startActivityForResult(intent, REQUEST_CODE);
                 break;

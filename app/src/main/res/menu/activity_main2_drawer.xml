@@ -18,6 +18,10 @@
             android:id="@+id/nav_manage"
             android:icon="@drawable/dynamic_password"
             android:title="修改密码" />
+        <item
+            android:id="@+id/nav_myLibrary"
+            android:icon="@drawable/nav_my_library"
+            android:title="我的图书馆" />
     </group>
 
     <item android:title="其他">

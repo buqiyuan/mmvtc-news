@@ -47,7 +47,7 @@ public class WelcomeActivity extends Activity {
 //                    startActivity(intent);
 //                } else {
 //                    //进入登录界面
-//                    Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
+//                    Intent intent = new Intent(WelcomeActivity.this, LibraryLoginActivity.class);
 //                    startActivity(intent);
 //                    finish();
 //                }*/
