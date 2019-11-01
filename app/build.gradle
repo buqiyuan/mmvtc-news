@@ -11,8 +11,8 @@ android {
         applicationId "com.mmvtc_news"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 16
-        versionName "2.2"
+        versionCode 15
+        versionName "2.1"
         multiDexEnabled = true//突破65535限制
         renderscriptTargetApi 27 as int
         renderscriptSupportModeEnabled true

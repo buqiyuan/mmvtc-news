@@ -29,9 +29,13 @@ import okhttp3.OkHttpClient;
 
 import static com.xuexiang.xupdate.entity.UpdateError.ERROR.CHECK_NO_NEW_VERSION;
 
+
 /**
- * Created by zhy on 15/8/25.
+ * @author 卜启缘
+ * @version 1.0
+ * @date 2019/9/7 20:11
  */
+
 public class MyApplication extends Application {
 //    @GlideModule
 //    public final class MyAppGlideModule extends AppGlideModule {}

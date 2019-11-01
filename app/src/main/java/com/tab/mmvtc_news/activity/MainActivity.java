@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity
     private RelativeLayout ll_header;
     private static Document doc = null;
     private ImageView user_line;
-    private String mUpdateUrl = "https://buqiyuan.xyz/my-demo/app_update.json";
+    private String mUpdateUrl = "https://buqiyuan.xyz/mmvtc-news/app_update.json";
 
     public static Document getDocument() {
         return doc;

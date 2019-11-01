@@ -38,7 +38,7 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
     private CustomVideoView videoview;
     private TextView tvUpdate;
     //    private String mUpdateUrl = "https://raw.githubusercontent.com/xuexiangjys/XUpdate/master/jsonapi/update_test.json";
-    private String mUpdateUrl = "https://buqiyuan.xyz/my-demo/app_update.json";
+    private String mUpdateUrl = "https://buqiyuan.xyz/mmvtc-news/app_update.json";
     private TextView tvShare;
     private TextView tvLostFound;
 
