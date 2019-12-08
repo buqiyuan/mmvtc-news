@@ -39,7 +39,7 @@ public class DepartmentFragment extends Fragment {
     private String studentName;
     private static String cookie;
     private String name;
-    private String url = "http://jwc.mmvtc.cn/";
+    private String url = "https://jwc.mmvtc.cn/";
     private static String refererUrl = "";
     private static String infoUrl = "";
     private static String scoreUrl = "";

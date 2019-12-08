@@ -33,6 +33,8 @@
     <string name="loading">正在登录...</string>
     <string name="login">登录</string>
     <string name="et_username_hint">请输入学号</string>
+    <string name="et_lib_username_hint">请输入图书馆账号(默认是身份证号码)</string>
+    <string name="et_lib_password_hint">请输入图书馆账号密码(默认是身份证号码)</string>
     <string name="et_password_hint">请输入密码</string>
     <string name="et_verificationCode_hint">请输入验证码</string>
     <string name="news">校园资讯</string>

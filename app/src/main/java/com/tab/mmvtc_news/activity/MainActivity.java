@@ -103,8 +103,8 @@ public class MainActivity extends AppCompatActivity
     private static String cookie;
     private String name;
     private String password;
-    private String url = "http://jwc.mmvtc.cn/";
-    private String autoLoginUrl = "http://jwc.mmvtc.cn/default4.aspx";
+    private String url = "https://jwc.mmvtc.cn/";
+    private String autoLoginUrl = "https://jwc.mmvtc.cn/default4.aspx";
     private static String refererUrl = "";
     private static String infoUrl = "";
     private static String scoreUrl = "";
@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity
     private NavigationView navigationView;
     private View headView;
     private boolean flag = false;
+    private int times = 0;//控制重连次数
     private AlertDialog alertDialog;
     private Boolean isLogin = false;
     private TextView tv_name;
@@ -227,7 +228,7 @@ public class MainActivity extends AppCompatActivity
             xgPswUrl = url + intent.getStringExtra("xgPswUrl");
             scoreUrl = url + intent.getStringExtra("scoreUrl");
             courseUrl = url + intent.getStringExtra("courseUrl");
-            refererUrl = "http://jwc.mmvtc.cn/xs_main.aspx?xh=" + name;
+            refererUrl = "https://jwc.mmvtc.cn/xs_main.aspx?xh=" + name;
             editor.putString("studentName", studentName);
             editor.putString("cookie", cookie);
             editor.putString("infoUrl", infoUrl);
@@ -257,17 +258,14 @@ public class MainActivity extends AppCompatActivity
 
     private void initEvents() {
         //给头像注册点击事件
-        ll_header.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isLogin) {
-                    return;
-                }
-                Bundle bundle = new Bundle();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
+        ll_header.setOnClickListener(view -> {
+            if (isLogin) {
+                return;
             }
+            Bundle bundle = new Bundle();
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
         });
 //        myViewpageAdapter = new MyViewpageAdapter(getSupportFragmentManager(), titles, fragments);
     }
@@ -324,8 +322,14 @@ public class MainActivity extends AppCompatActivity
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        ToastUtils.show("获取数据失败！正在重连...");
-                        getIndexData();
+                        if (times++ > 4){
+                            ToastUtils.show("自动登录失败！请检查学校教务处官网是否可用或手动登录。");
+                            return ;
+                        }
+                        new Handler().postDelayed(() -> {
+                            ToastUtils.show("获取数据失败！正在重连"+titles+"次。");
+                            getIndexData();
+                        }, 1200);
                     }
 
                     @Override
@@ -487,7 +491,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getCookie() {
-        String jwcUrl = "http://jwc.mmvtc.cn/xs_main.aspx";
+        String jwcUrl = "https://jwc.mmvtc.cn/xs_main.aspx";
         OkHttpUtils
                 .get()
                 .url(jwcUrl)

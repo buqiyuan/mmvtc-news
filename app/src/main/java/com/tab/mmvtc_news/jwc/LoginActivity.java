@@ -51,9 +51,9 @@ public class LoginActivity extends Activity implements OnClickListener {
     private ImageView iv_vertify;
     private Button btn_login;
     private CheckBox cb_isSave;
-    private String url = "http://jwc.mmvtc.cn";
-    private String urlStr = "http://jwc.mmvtc.cn/CheckCode.aspx";
-    private String loginUrl = "http://jwc.mmvtc.cn/default2.aspx";
+    private String url = "https://jwc.mmvtc.cn";
+    private String urlStr = "https://jwc.mmvtc.cn/CheckCode.aspx";
+    private String loginUrl = "https://jwc.mmvtc.cn/default2.aspx";
     private String cookie = "";
     private String name = "";
     private String password = "";
@@ -265,10 +265,10 @@ public class LoginActivity extends Activity implements OnClickListener {
             Elements top = html.select("#headDiv .nav > li.top");
             studentName = html.select("span#xhxm").text();
             studentName = studentName.substring(0, studentName.length() - 2);
-            String info = top.get(2).select(".sub > li:first-child a").attr("href");
-            String course = top.get(3).select(".sub > li:first-child a").attr("href");
-            String xgPsw = top.get(2).select(".sub > li:nth-child(2) a").attr("href");
-            String cj = top.get(3).select(".sub > li:nth-child(4) a").attr("href");
+            String info = top.get(3).select(".sub > li:first-child a").attr("href");
+            String course = top.get(4).select(".sub > li:first-child a").attr("href");
+            String xgPsw = top.get(3).select(".sub > li:nth-child(2) a").attr("href");
+            String cj = top.get(4).select(".sub > li:nth-child(4) a").attr("href");
             String encodeName = null;
             try {
                 encodeName = URLEncoder.encode(studentName, "gb2312");

@@ -96,7 +96,9 @@ public class LibraryLoginActivity extends Activity implements OnClickListener {
     // 初始化控件
     private void init() {
         et_name = (EditText) findViewById(R.id.et_name);
+        et_name.setHint(R.string.et_lib_username_hint);
         et_password = (EditText) findViewById(R.id.et_password);
+        et_password.setHint(R.string.et_lib_password_hint);
         et_vertify = (EditText) findViewById(R.id.et_vertify);
         iv_vertify = (ImageView) findViewById(R.id.iv_vertify);
         btn_login = (Button) findViewById(R.id.btn_login);
