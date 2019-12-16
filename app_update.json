@@ -2,7 +2,7 @@
 "Code": 0,
 "Msg": "",
 "UpdateStatus": 1,
-"VersionCode": 17,
+"VersionCode": 18,
 "VersionName": "2.4",
 "UploadTime": "2019-12-8 17:28:41",
 "ModifyContent": "\r\n1、更换教务处Https。\r\n2、修复课程表周数显示不准确问题。\r\n3、新增用户引导、我的图书馆。\r\n4、新增应用分享和失物招领功能。",
