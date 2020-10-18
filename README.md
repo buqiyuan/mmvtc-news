@@ -6,7 +6,7 @@
 
 > 技术栈：Jsoup + okhttp3 + sweet-alert-dialog + XUpdate + glide + banner + gson + rxandroid + rxjava + eventbus
 
-> [APK下载地址](https://buqiyuan.xyz/mmvtc-news/mmvtc_news.apk)
+> [APK下载地址](https://buqiyuan.github.io/mmvtc-news/mmvtc_news.apk)
 
 ## 运行效果：
 
